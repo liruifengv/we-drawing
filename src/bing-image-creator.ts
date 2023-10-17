@@ -16,6 +16,11 @@ export class BingImageCreator {
     }
   }
 
+  /**
+   * Create image
+   * @param prompt - The prompt
+   * @returns The image links
+   */
   async createImage(prompt: string) {
     const cookie = this._cookie;
     const encodedPrompt = encodeURIComponent(prompt)
