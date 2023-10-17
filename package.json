@@ -1,0 +1,20 @@
+{
+  "name": "get-up",
+  "version": "0.0.1",
+  "description": "Generating Poetry Images daily. Powered by Bing DALL-E-3.",
+  "main": "cli.js",
+  "scripts": {
+    "start": "npm run build & node dist/cli.js",
+    "build": "tsc --noEmit && esbuild \"src/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist"
+  },
+  "author": "liruifengv",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.8.6",
+    "esbuild": "^0.19.5",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}

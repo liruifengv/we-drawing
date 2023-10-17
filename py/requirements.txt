@@ -1,0 +1,4 @@
+requests
+pendulum
+aiohttp
+regex
