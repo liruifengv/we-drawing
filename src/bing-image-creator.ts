@@ -1,28 +1,14 @@
+import { HEADERS, BING_URL } from "./const";
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
-const BING_URL: string = process.env.BING_URL || "https://www.bing.com";
-
-// Generate random IP between range 13.104.0.0/14
-const FORWARDED_IP: string = `13.${Math.floor(Math.random() * 4) + 104}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
-const HEADERS: {[key: string]: string} = {
-  "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-  "accept-language": "en-US,en;q=0.9",
-  "cache-control": "max-age=0",
-  "content-type": "application/x-www-form-urlencoded",
-  "referrer": "https://www.bing.com/images/create/",
-  "origin": "https://www.bing.com",
-  "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.63",
-};
-
 
 export class BingImageCreator {
   /**
    * Image generation by Microsoft Bing
-   * @param cookie - Authentication cookie
+   * @param cookie - All cookie
    */
   protected _cookie: string
   constructor({ cookie }: { cookie: string }) {
-    console.log(`cookie: ${cookie}`);
     this._cookie = cookie
 
     if (!this._cookie) {
@@ -32,7 +18,6 @@ export class BingImageCreator {
 
   async createImage(prompt: string) {
     const cookie = this._cookie;
-    console.log('cookie', cookie)
     const encodedPrompt = encodeURIComponent(prompt)
     let formData = new FormData();
     formData.append("q", encodedPrompt);
@@ -78,6 +63,7 @@ export class BingImageCreator {
         const start_wait = Date.now();
         let result = "";
         while (true) {
+            console.log('Waiting for result...')
             if (Date.now() - start_wait > 200000) {
                 throw new Error('Timeout');
             }
@@ -89,11 +75,14 @@ export class BingImageCreator {
             }
         }
         return this.parseResult(result);
-
       }
     })
   }
-
+  /**
+    * Get the result
+    * @param getResultUrl - The result url
+    * @returns The result
+    */
   async getResults(getResultUrl: string) {
     const response = await fetch(getResultUrl, {
       method: 'GET',
@@ -108,13 +97,17 @@ export class BingImageCreator {
         throw new Error('Bad status code');
     }
     const content = await response.text();
-    console.log('content', content);
     if (!content || content.includes("errorMessage")) {
         return null
     } else {
         return content;
     }
   }
+  /**
+   * Parse the result
+   * @param result - The result
+   * @returns The image links
+   */
   parseResult(result: string) {
       // Use regex to search for src=""
       const regex = /src="([^"]*)"/g;
