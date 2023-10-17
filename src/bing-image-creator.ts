@@ -38,6 +38,7 @@ export class BingImageCreator {
     formData.append("q", encodedPrompt);
     formData.append("qa", "ds");
     console.log("Sending request...")
+    // rt=3 or rt=4
     const url = `${BING_URL}/images/create?q=${encodedPrompt}&rt=3&FORM=GENCRE`
 
     return fetch(url, {
@@ -64,6 +65,10 @@ export class BingImageCreator {
             method: 'GET',
             mode: 'cors',
             credentials: 'include',
+            headers: {
+              cookie,
+              ...HEADERS,
+            },
           })
         } catch (e) {
           throw new Error('Request failed2', e);
@@ -94,6 +99,10 @@ export class BingImageCreator {
       method: 'GET',
       mode: 'cors',
       credentials: 'include',
+      headers: {
+        cookie: this._cookie,
+        ...HEADERS,
+      },
     });
     if (response.status !== 200) {
         throw new Error('Bad status code');
