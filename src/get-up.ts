@@ -31,7 +31,7 @@ async function getImageBySentence(cookie: string): Promise<Response> {
   try {
     const images = await bingImageCreator.createImage(prompt)
     return {
-      images: [],
+      images,
       content: res.content,
       origin: res.origin,
       author: res.author,

@@ -114,9 +114,10 @@ export class BingImageCreator {
    * @returns The image links
    */
   parseResult(result: string) {
+      console.log('Parsing result...')
       // Use regex to search for src=""
       const regex = /src="([^"]*)"/g;
-      const matches = result.match(regex);
+      const matches = [...result.matchAll(regex)].map(match => match[1]);
       // # Remove size limit
       const normal_image_links = matches.map((link) => {
           return link.split("?w=")[0];
