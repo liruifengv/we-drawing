@@ -70,8 +70,8 @@ async function init() {
       fs.writeFileSync(listPath, JSON.stringify(list));
 
       setTimeout(() => {  // 为了让图片下载完毕，再退出进程
-      // process.exit(0);
-      }, 10000);
+        process.exit(0);
+      }, 5000);
     } catch (e) {
       throw e
     }

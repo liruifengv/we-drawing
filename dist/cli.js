@@ -813,7 +813,8 @@ async function init() {
       list.push(outputData);
       import_fs.default.writeFileSync(listPath, JSON.stringify(list));
       setTimeout(() => {
-      }, 1e4);
+        process.exit(0);
+      }, 5e3);
     } catch (e) {
       throw e;
     }
