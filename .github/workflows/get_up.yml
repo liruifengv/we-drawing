@@ -29,6 +29,9 @@ jobs:
       - name: Install Deps
         run: pnpm install --no-frozen-lockfile
 
+      - name: Build
+        run: pnpm run build
+
       - name: Create Image
         run: pnpm run start --cookie "${{ secrets.BING_COOKIE }}"
 

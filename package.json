@@ -4,7 +4,8 @@
   "description": "Generating Poetry Images daily. Powered by Bing DALL-E-3.",
   "main": "cli.js",
   "scripts": {
-    "start": "npm run build & node dist/cli.js",
+    "start": "node dist/cli.js",
+    "dev": "npm run build & node dist/cli.js",
     "build": "tsc --noEmit && esbuild \"bin/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist"
   },
   "author": "liruifengv",
