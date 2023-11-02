@@ -1,0 +1,12 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ImageDetails from '../../components/ImageDetails.astro';
+import { getDataEntryById } from 'astro:content';
+
+const result = await getDataEntryById('images', Astro.params.id as any);
+const data = result.data.data;
+---
+
+<Layout title={`${data.content}`}>
+	<ImageDetails data={data} />
+</Layout>

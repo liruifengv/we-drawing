@@ -1,0 +1,30 @@
+---
+const { item } = Astro.props;
+import { Image } from "astro:assets"
+const allImages = await Astro.glob(`../assets/images/*/*.jpg`).then(it => {
+  return it.map(it => it.default);
+});
+
+const image = allImages.filter(it => it.src.includes(item.localImagesPath))[0];
+---
+
+<div class="mt-8">
+	<a href={`/images/${item.localImagesPath}`}>
+		<Image
+			src={image}
+			alt={`${item.content} Poster`}
+			class="thumbnail hover:opacity-75 transition ease-in-out duration-150"
+			id={`image-poster-${item.localImagesPath}`}
+			transition:name={`poster-${item.localImagesPath}`}
+		/>
+	</a>
+	<div class="mt-2">
+		<a href={`/images/${item.localImagesPath}`} class="text-lg mt-2 hover:text-gray-300">{item.content}</a>
+		<div class="flex items-center text-gray-400 text-sm mt-1">
+			<span class="ml-1">{item.origin}</span>
+			<span class="mx-2">|</span>
+			<span>{item.author}</span>
+		</div>
+		<div class="text-gray-400 text-sm">{item.date}</div>
+	</div>
+</div>

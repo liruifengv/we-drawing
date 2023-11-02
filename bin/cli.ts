@@ -18,13 +18,8 @@ async function init() {
       const res: Response = await getImageBySentence(argv.cookie);
       console.log("Create Successful: ", res);
  
-      // 如果没有 output 目录，就创建一个。如果没有 list.json 文件，就创建一个。在 output 目录下，的 list.json 文件中，添加一条记录。
-      const outputPath = path.join(cwd, 'output');
-      if (!fs.existsSync(outputPath)) {
-        fs.mkdirSync(outputPath);
-      }
+      const outputPath = path.join(cwd, 'website/src/assets');
 
-      // output 下的 images 目录
       const imagesPath = path.join(outputPath, 'images');
       if (!fs.existsSync(imagesPath)) {
         fs.mkdirSync(imagesPath);
@@ -60,8 +55,8 @@ async function init() {
       }
 
       const outputData = {
-        res,
-        date: new Date().toLocaleString(),
+        ...res,
+        date: new Date().toLocaleString("zh-CN"),
         localImagesPath: imagesFolderName,
       }
 
