@@ -16,9 +16,9 @@ const path = `/images/${item.localImagesPath}/0.jpg`
 		/>
 	</a>
 	<div class="mt-2">
-		<a href={`/images/${item.localImagesPath}`} class="text-lg mt-2 hover:text-gray-300">{item.content}</a>
+		<a href={`/images/${item.localImagesPath}`} class="text-lg mt-2 hover:text-gray-300" transition:name={`${item.content}`}>{item.content}</a>
 		<div class="flex items-center text-gray-400 text-sm mt-1">
-			<span class="ml-1">{item.origin}</span>
+			<span class="ml-1">《{item.origin}》</span>
 			<span class="mx-2">|</span>
 			<span>{item.author}</span>
 		</div>

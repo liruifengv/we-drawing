@@ -15,7 +15,7 @@ const sortedImages = images.sort(
 <div class="container mx-auto px-4 pt-16 mb-16">
 	<div>
 		<h2 class="tracking-wider text-orange-500 text-lg font-semibold">All Images</h2>
-		<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+		<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 lg:grid-cols-4 gap-8">
       {
         sortedImages.length > 0 ? sortedImages.map((item) => <ImageCard item={item.data} />) : <p>No images found</p>
       }

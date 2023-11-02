@@ -189,6 +189,16 @@ declare module 'astro:content' {
   collection: "images";
   data: InferEntrySchema<"images">
 };
+"1698923879190": {
+	id: "1698923879190";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1698924126666": {
+	id: "1698924126666";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
 };
 
 	};
