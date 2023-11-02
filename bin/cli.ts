@@ -48,10 +48,10 @@ async function init() {
             });
         });
       });
-
+      const options = { timeZone: 'Asia/Shanghai', hour12: false };
       const outputData = {
         ...res,
-        date: new Date().toLocaleString("zh-CN"),
+        date: new Date().toLocaleString("zh-CN", options),
         localImagesPath: imagesFolderName,
       }
 
