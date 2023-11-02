@@ -18,7 +18,7 @@ async function init() {
       const res: Response = await getImageBySentence(argv.cookie);
       console.log("Create Successful: ", res);
  
-      const outputPath = path.join(cwd, 'website/src/assets');
+      const outputPath = path.join(cwd, 'website/public');
 
       const imagesPath = path.join(outputPath, 'images');
       if (!fs.existsSync(imagesPath)) {
