@@ -60,6 +60,16 @@ async function init() {
         localImagesPath: imagesFolderName,
       }
 
+      const contentData = {
+        data: outputData,
+      }
+
+      const contentPath = path.join(cwd, 'website/src/content/images');
+
+      const contentFile = path.join(contentPath, `${imagesFolderName}.json`);
+
+      fs.writeFileSync(contentFile, JSON.stringify(contentData));
+
       const list = JSON.parse(fs.readFileSync(listPath, 'utf-8'));
       list.push(outputData);
       fs.writeFileSync(listPath, JSON.stringify(list));
