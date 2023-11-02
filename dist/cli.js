@@ -709,7 +709,7 @@ var BingImageCreator = class {
    * @returns The image links
    */
   parseResult(result) {
-    console.log("Parsing result...", result);
+    console.log("Parsing result...");
     const regex = /src="([^"]*)"/g;
     const matches = [...result.matchAll(regex)].map((match) => match[1]);
     const normal_image_links = matches.map((link) => {
@@ -812,6 +812,8 @@ async function init() {
       const list = JSON.parse(import_fs.default.readFileSync(listPath, "utf-8"));
       list.push(outputData);
       import_fs.default.writeFileSync(listPath, JSON.stringify(list));
+      setTimeout(() => {
+      }, 1e4);
     } catch (e) {
       throw e;
     }
