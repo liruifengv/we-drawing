@@ -5,7 +5,7 @@
   "main": "cli.js",
   "scripts": {
     "start": "npm run build & node dist/cli.js",
-    "build": "tsc --noEmit && esbuild \"src/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist"
+    "build": "tsc --noEmit && esbuild \"bin/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist"
   },
   "author": "liruifengv",
   "license": "MIT",
@@ -15,6 +15,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "minimist": "^1.2.8"
   }
 }
