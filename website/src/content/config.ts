@@ -3,7 +3,13 @@ import { z, defineCollection } from 'astro:content';
 const images = defineCollection({
 	type: 'data',
 	schema: z.object({
-		data: z.any(),
+    images: z.array(z.string()),
+    content: z.string(),
+    author: z.string(),
+    category: z.string(),
+    origin: z.string(),
+    date : z.string(),
+    localImagesPath: z.string(),
 	}),
 });
 

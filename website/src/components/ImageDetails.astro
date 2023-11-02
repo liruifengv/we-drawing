@@ -2,38 +2,35 @@
 const { data } = Astro.props;
 import { Image } from "astro:assets"
 
-const image = {
-	...data,
-};
-console.log(image);
+const images: string[] = []
 
-const allImages = await Astro.glob(`../assets/images/*/*.jpg`).then(it => {
-  return it.map(it => it.default);
+
+data.images.forEach((item: string, index: number) => {
+  const path = `/images/${data.localImagesPath}/${index}.jpg`
+  images.push(path)
 });
-
-const images = allImages.filter(it => it.src.includes(image.localImagesPath));
 
 ---
 
 <div class="image-info border-b border-gray-800">
 	<div class="container mx-auto px-4 py-16 flex flex-col items-center">
     <div class="md:ml-24">
-			<h2 class="text-4xl mt-4 md:mt-0 mb-2 font-semibold">{image.content}</h2>
+			<h2 class="text-4xl mt-4 md:mt-0 mb-2 font-semibold">{data.content}</h2>
 			<div class="flex flex-wrap items-center text-gray-400 text-md">
-				<span>{image.origin}</span>
+				<span>{data.origin}</span>
 				<span class="mx-2">|</span>
-				<span>{image.author}</span>
+				<span>{data.author}</span>
 			</div>
 		</div>
 		<div class="flex flex-wrap w-full md:w-3/4 mt-5">
       {
         images.map((item, index) => {
-          return <Image
+          return <img
             src={item}
-            alt={`${image.content}`}
+            alt={`${data.content}`}
             class="hover:opacity-75 transition ease-in-out duration-150 w-full md:w-1/2"
-            id={`image-poster-${item.localImagesPath}-${index}`}
-            transition:name={`poster-${item.localImagesPath}-${index}`}
+            id={`image-poster-${data.localImagesPath}-${index}`}
+            transition:name={`poster-${data.localImagesPath}-${index}`}
           />
         })
       }

@@ -49,30 +49,17 @@ async function init() {
         });
       });
 
-      const listPath = path.join(outputPath, 'list.json');
-      if (!fs.existsSync(listPath)) {
-        fs.writeFileSync(listPath, JSON.stringify([]));
-      }
-
       const outputData = {
         ...res,
         date: new Date().toLocaleString("zh-CN"),
         localImagesPath: imagesFolderName,
       }
 
-      const contentData = {
-        data: outputData,
-      }
-
       const contentPath = path.join(cwd, 'website/src/content/images');
 
       const contentFile = path.join(contentPath, `${imagesFolderName}.json`);
 
-      fs.writeFileSync(contentFile, JSON.stringify(contentData));
-
-      const list = JSON.parse(fs.readFileSync(listPath, 'utf-8'));
-      list.push(outputData);
-      fs.writeFileSync(listPath, JSON.stringify(list));
+      fs.writeFileSync(contentFile, JSON.stringify(outputData));
 
       setTimeout(() => {  // 为了让图片下载完毕，再退出进程
         process.exit(0);

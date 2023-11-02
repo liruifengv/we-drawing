@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ImageDetails from '../../components/ImageDetails.astro';
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const images = await getCollection("images")
+
+  return images.map(img => ({
+    params: { slug: img.data.localImagesPath },
+    props: img,
+  }));
+}
+
+type Props = CollectionEntry<'images'>
+
+const img = Astro.props
+
+---
+
+<Layout title={`${img.data.content}`}>
+	<ImageDetails data={img.data} />
+</Layout>
