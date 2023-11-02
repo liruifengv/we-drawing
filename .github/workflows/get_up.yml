@@ -8,8 +8,10 @@ on:
     - cron: "0 23 * * *"
 
 jobs:
-  test:
+  CreateImage:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         node-version: [18]
