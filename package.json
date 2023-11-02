@@ -1,5 +1,5 @@
 {
-  "name": "get-up",
+  "name": "daily-poetry-image",
   "version": "0.0.1",
   "description": "Generating Poetry Images daily. Powered by Bing DALL-E-3.",
   "main": "cli.js",
