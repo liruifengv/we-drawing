@@ -1,5 +1,4 @@
 packages
 pnpm-workspace.yaml
 node_modules
-dist
 .env
