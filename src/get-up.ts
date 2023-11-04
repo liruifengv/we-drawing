@@ -27,7 +27,7 @@ async function getImageBySentence(cookie: string): Promise<Response> {
   const res = await getSentence()
   console.log("getSentence Result: ", res)
 
-  const prompt = res.content
+  const prompt = `${res.content}, textless`
   try {
     const images = await bingImageCreator.createImage(prompt)
     return {
