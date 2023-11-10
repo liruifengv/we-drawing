@@ -1,22 +1,24 @@
 {
-  "name": "daily-poetry-image",
-  "version": "0.0.1",
-  "description": "Generating Poetry Images daily. Powered by Bing DALL-E-3.",
-  "main": "cli.js",
-  "scripts": {
-    "start": "node dist/cli.js",
-    "dev": "npm run build & node dist/cli.js",
-    "build": "tsc --noEmit && esbuild \"bin/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist"
-  },
-  "author": "liruifengv",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^20.8.6",
-    "esbuild": "^0.19.5",
-    "typescript": "^5.2.2"
-  },
-  "dependencies": {
-    "dotenv": "^16.3.1",
-    "minimist": "^1.2.8"
-  }
+    "name": "daily-poetry-image",
+    "version": "0.0.1",
+    "description": "Generating Poetry Images daily. Powered by Bing DALL-E-3.",
+    "main": "cli.js",
+    "scripts": {
+        "start": "node dist/cli.js",
+        "dev": "npm run build & node dist/cli.js",
+        "build": "tsc --noEmit && esbuild \"bin/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist",
+        "format": "prettier --write ."
+    },
+    "author": "liruifengv",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^20.8.6",
+        "esbuild": "^0.19.5",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "minimist": "^1.2.8",
+        "prettier": "^3.0.3"
+    }
 }

@@ -1,23 +1,23 @@
 {
-  "name": "daily-poetry-image",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "devDependencies": {
-    "@astrojs/node": "^6.0.3",
-    "@astrojs/tailwind": "^5.0.2",
-    "astro": "^3.4.2"
-  },
-  "dependencies": {
-    "@astrojs/check": "^0.3.0",
-    "@astrojs/rss": "^3.0.0",
-    "@astrojs/sitemap": "^3.0.3",
-    "@astrojs/vercel": "^5.1.0",
-    "typescript": "^5.2.2"
-  }
+    "name": "daily-poetry-image",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "start": "astro dev",
+        "build": "astro check && astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "devDependencies": {
+        "@astrojs/node": "^6.0.3",
+        "@astrojs/tailwind": "^5.0.2",
+        "astro": "^3.4.2"
+    },
+    "dependencies": {
+        "@astrojs/check": "^0.3.0",
+        "@astrojs/rss": "^3.0.0",
+        "@astrojs/sitemap": "^3.0.3",
+        "@astrojs/vercel": "^5.1.0",
+        "typescript": "^5.2.2"
+    }
 }

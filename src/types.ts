@@ -1,10 +1,10 @@
 export type SentenceResponse = {
-  content: string
-  origin: string
-  author: string
-  category: string
-}
+    content: string;
+    origin: string;
+    author: string;
+    category: string;
+};
 
 export type Response = {
-  images: string[]
-} & SentenceResponse
+    images: string[];
+} & SentenceResponse;

@@ -5,10 +5,11 @@
 ### 👉🏽 [Live Demo](https://daily-poetry-image.vercel.app/)
 
 ## 项目介绍
-- 本项目是基于 [Bing Image DALL-E-3](https://www.bing.com/images/create) 生成的图片，每天一句中国古诗词作为 Prompt。
-- GitHub Action 自动触发。
-- 诗词由[今日诗词](https://www.jinrishici.com/)提供 API。
-- 网站使用 [Astro](https://astro.build) 构建。
+
+-   本项目是基于 [Bing Image DALL-E-3](https://www.bing.com/images/create) 生成的图片，每天一句中国古诗词作为 Prompt。
+-   GitHub Action 自动触发。
+-   诗词由[今日诗词](https://www.jinrishici.com/)提供 API。
+-   网站使用 [Astro](https://astro.build) 构建。
 
 ## 订阅
 
@@ -26,7 +27,7 @@
 
 ## 灵感来源
 
-- [yihong0618/2023](https://github.com/yihong0618/2023)
+-   [yihong0618/2023](https://github.com/yihong0618/2023)
 
 ## License
 

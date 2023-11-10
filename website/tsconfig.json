@@ -1,14 +1,14 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "baseUrl": "src",
-    "jsx": "react-jsx",
-    "paths": {
-      "@config": ["config.ts"],
-      "@content/*": ["content/*"],
-      "@pages/*": ["pages/*"],
-    },
-    "types": ["astro/client"]
-  }
+    "extends": "astro/tsconfigs/strict",
+    "compilerOptions": {
+        "resolveJsonModule": true,
+        "baseUrl": "src",
+        "jsx": "react-jsx",
+        "paths": {
+            "@config": ["config.ts"],
+            "@content/*": ["content/*"],
+            "@pages/*": ["pages/*"]
+        },
+        "types": ["astro/client"]
+    }
 }

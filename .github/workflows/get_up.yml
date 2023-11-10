@@ -1,42 +1,42 @@
 name: ci
 
 on:
-  schedule:
-    - cron: "0 23 * * *"
+    schedule:
+        - cron: "0 23 * * *"
 
 jobs:
-  CreateImage:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    strategy:
-      matrix:
-        node-version: [18]
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+    CreateImage:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        strategy:
+            matrix:
+                node-version: [18]
+        steps:
+            - name: Checkout 🛎️
+              uses: actions/checkout@v3
+              with:
+                  persist-credentials: false
 
-      - name: Install PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: ^7.0
+            - name: Install PNPM
+              uses: pnpm/action-setup@v2
+              with:
+                  version: ^7.0
 
-      - name: Install Deps
-        run: pnpm install --no-frozen-lockfile
+            - name: Install Deps
+              run: pnpm install --no-frozen-lockfile
 
-      - name: Build
-        run: pnpm run build
+            - name: Build
+              run: pnpm run build
 
-      - name: Create Image
-        run: pnpm run start --cookie "${{ secrets.BING_COOKIE }}"
+            - name: Create Image
+              run: pnpm run start --cookie "${{ secrets.BING_COOKIE }}"
 
-      - name: Push New Pic
-        run: |
-          git config --local user.email "liruifeng1024@gmail.com"
-          git config --local user.name "${{ github.actor }}"
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git add .
-          git commit -m "generated today pic" || echo "no need to commit "
-          git push -f || echo "no file change"
+            - name: Push New Pic
+              run: |
+                  git config --local user.email "liruifeng1024@gmail.com"
+                  git config --local user.name "${{ github.actor }}"
+                  git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+                  git add .
+                  git commit -m "generated today pic" || echo "no need to commit "
+                  git push -f || echo "no file change"
