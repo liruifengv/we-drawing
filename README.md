@@ -10,6 +10,12 @@
 - 诗词由[今日诗词](https://www.jinrishici.com/)提供 API。
 - 网站使用 [Astro](https://astro.build) 构建。
 
+## 订阅
+
+你可以使用 RSS 订阅每天的诗词配图：https://daily-poetry-image.vercel.app/rss.xml
+
+[如何用 RSS 订阅？](https://zhuanlan.zhihu.com/p/55026716)
+
 ## 截图
 
 ![图片列表](./screenshots/01.png)
