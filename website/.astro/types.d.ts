@@ -199,6 +199,51 @@ declare module 'astro:content' {
   collection: "images";
   data: InferEntrySchema<"images">
 };
+"1698926685021": {
+	id: "1698926685021";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1698966214039": {
+	id: "1698966214039";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699052522194": {
+	id: "1699052522194";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699138896351": {
+	id: "1699138896351";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699225316037": {
+	id: "1699225316037";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699318097108": {
+	id: "1699318097108";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699398119532": {
+	id: "1699398119532";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699484543437": {
+	id: "1699484543437";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1699571000270": {
+	id: "1699571000270";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
 };
 
 	};

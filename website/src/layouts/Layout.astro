@@ -3,12 +3,14 @@ import '../styles/styles.css';
 import { ViewTransitions } from 'astro:transitions';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
+import { SITE } from '@config';
 
 export interface Props {
 	title: string;
+  description?: string;
 }
 
-const { title } = Astro.props as Props;
+const { title, description } = Astro.props as Props;
 ---
 
 <!doctype html>
@@ -19,7 +21,13 @@ const { title } = Astro.props as Props;
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="view-transition" content="same-origin" />
-		<title>{title}</title>
+    <!-- General Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description || SITE.desc} />
+    <meta name="author" content={SITE.author} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    
 		<ViewTransitions />
 	</head>
 	<body class="font-sans bg-gray-900 text-white">
