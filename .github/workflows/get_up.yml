@@ -39,4 +39,5 @@ jobs:
                   git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
                   git add .
                   git commit -m "generated today pic" || echo "no need to commit "
+                  git pull origin main --rebase
                   git push -f || echo "no file change"
