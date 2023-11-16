@@ -64,7 +64,8 @@ async function init() {
                 process.exit(0);
             }, 5000);
         } catch (e) {
-            throw e;
+            console.error(e);
+            process.exit(1);
         }
     } else {
         throw new Error("Please provide a cookie using the --cookie argument");

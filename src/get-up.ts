@@ -38,7 +38,7 @@ async function getImageBySentence(cookie: string): Promise<Response> {
             category: res.category,
         };
     } catch (error) {
-        throw new Error("Bing Image create failed: ", error);
+        throw new Error(`Bing Image create failed: ${error.message}`);
     }
 }
 

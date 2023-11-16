@@ -61,7 +61,7 @@ export class BingImageCreator {
                         },
                     });
                 } catch (e) {
-                    throw new Error("Request failed2", e);
+                    throw new Error(`Request redirect_url failed" ${e.message}`);
                 }
 
                 const getResultUrl = `${BING_URL}/images/create/async/results/${request_id}?q=${encodedPrompt}`;
