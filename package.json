@@ -5,7 +5,7 @@
     "main": "cli.js",
     "scripts": {
         "start": "node dist/cli.js",
-        "dev": "npm run build & node dist/cli.js",
+        "dev": "npm run build && node dist/cli.js",
         "build": "tsc --noEmit && esbuild \"bin/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist",
         "format": "prettier --write ."
     },
