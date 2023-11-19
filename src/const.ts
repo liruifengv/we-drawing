@@ -8,7 +8,7 @@ export const HEADERS: { [key: string]: string } = {
     referrer: "https://www.bing.com/images/create/",
     origin: "https://www.bing.com",
     "user-agent":
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.63",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
 };
 
 export const SENTENCE_API = "https://v1.jinrishici.com/all";
