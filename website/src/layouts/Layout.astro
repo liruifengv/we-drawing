@@ -29,6 +29,16 @@ const { title, description } = Astro.props as Props;
     <link rel="sitemap" href="/sitemap-index.xml" />
     
 		<ViewTransitions />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YJV9MPDM78"></script>
+    <script>
+      // @ts-nocheck
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-YJV9MPDM78');
+    </script>
 	</head>
 	<body class="font-sans bg-gray-900 text-white">
 		<div class="h-screen overflow-hidden flex flex-col">
@@ -41,4 +51,5 @@ const { title, description } = Astro.props as Props;
 			</div>
 		</div>
 	</body>
+
 </html>
