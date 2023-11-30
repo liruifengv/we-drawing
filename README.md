@@ -29,6 +29,17 @@
 
 -   [yihong0618/2023](https://github.com/yihong0618/2023)
 
+## Star History
+
+<a href="https://star-history.com/#liruifengv/daily-poetry-image&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=liruifengv/daily-poetry-image&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=liruifengv/daily-poetry-image&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=liruifengv/daily-poetry-image&type=Date" />
+  </picture>
+</a>
+
+
 ## License
 
 MIT
