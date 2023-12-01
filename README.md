@@ -39,7 +39,6 @@
   </picture>
 </a>
 
-
 ## License
 
 MIT
