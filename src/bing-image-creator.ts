@@ -22,66 +22,84 @@ export class BingImageCreator {
      * @returns The image links
      */
     async createImage(prompt: string) {
-        const cookie = this._cookie;
-        const encodedPrompt = encodeURIComponent(prompt);
-        let formData = new FormData();
-        formData.append("q", encodedPrompt);
-        formData.append("qa", "ds");
-        console.log("Sending request...");
-        // rt=3 or rt=4
-        const url = `${BING_URL}/images/create?q=${encodedPrompt}&rt=3&FORM=GENCRE`;
+      const encodedPrompt = encodeURIComponent(prompt);
+      let formData = new FormData();
+      formData.append("q", encodedPrompt);
+      formData.append("qa", "ds");
+      console.log("Sending request...");
+      // rt=3 or rt=4
+      const url = `${BING_URL}/images/create?q=${encodedPrompt}&rt=3&FORM=GENCRE`;
 
-        return fetch(url, {
+      try {
+        const { redirect_url, request_id } = await this.fetchRedirectUrl(url);
+        return this.fetchResult(encodedPrompt, redirect_url, request_id);
+      } catch (e) {
+        // retry 1 time
+        console.log("retry 1 time");
+        return this.fetchRedirectUrl(url)
+          .then((res) => {
+            return this.fetchResult(encodedPrompt, res.redirect_url, res.request_id);
+          })
+          .catch((e) => {
+            throw new Error(`Request failed: ${e.message}`);
+          });
+      }
+    }
+    async fetchRedirectUrl(url: string) {
+        const response = await fetch(url, {
+            method: "GET",
+            mode: "cors",
+            credentials: "include",
             headers: {
-                cookie,
+                cookie: this._cookie,
                 ...HEADERS,
             },
-            body: formData,
-            method: "POST",
-            mode: "cors",
-            redirect: "manual", // set to manual to prevent redirect
-        }).then(async (res) => {
-            if (res.ok) {
-                // 200 is failed
-                throw new Error("Request failed");
-            } else {
-                // 302 is success
-                const redirect_url = res.headers.get("location").replace("&nfy=1", "");
-                const request_id = redirect_url.split("id=")[1];
-                console.log("redirect_url", redirect_url);
-                console.log("request_id", request_id);
-                try {
-                    await fetch(`${BING_URL}${redirect_url}`, {
-                        method: "GET",
-                        mode: "cors",
-                        credentials: "include",
-                        headers: {
-                            cookie,
-                            ...HEADERS,
-                        },
-                    });
-                } catch (e) {
-                    throw new Error(`Request redirect_url failed" ${e.message}`);
-                }
-
-                const getResultUrl = `${BING_URL}/images/create/async/results/${request_id}?q=${encodedPrompt}`;
-                const start_wait = Date.now();
-                let result = "";
-                while (true) {
-                    console.log("Waiting for result...");
-                    if (Date.now() - start_wait > 200000) {
-                        throw new Error("Timeout");
-                    }
-
-                    await sleep(1000);
-                    result = await this.getResults(getResultUrl);
-                    if (result) {
-                        break;
-                    }
-                }
-                return this.parseResult(result);
-            }
         });
+        if (response.ok) {
+          throw new Error("Request failed");
+        } else {
+          const redirect_url = response.headers.get("location").replace("&nfy=1", "");
+          const request_id = redirect_url.split("id=")[1];
+          return {
+            redirect_url,
+            request_id
+          }
+        }
+    }
+    async fetchResult(encodedPrompt: string, redirect_url: string, request_id: string) {
+      console.log("redirect_url is ", redirect_url);
+      console.log("request_id is ", request_id);
+      const cookie = this._cookie;
+      try {
+        await fetch(`${BING_URL}${redirect_url}`, {
+          method: "GET",
+          mode: "cors",
+          credentials: "include",
+          headers: {
+              cookie,
+              ...HEADERS,
+          },
+        });
+      } catch (e) {
+          throw new Error(`Request redirect_url failed" ${e.message}`);
+      }
+
+      const getResultUrl = `${BING_URL}/images/create/async/results/${request_id}?q=${encodedPrompt}`;
+      const start_wait = Date.now();
+      let result = "";
+      while (true) {
+          console.log("Waiting for result...");
+          if (Date.now() - start_wait > 200000) {
+              throw new Error("Timeout");
+          }
+
+          await sleep(1000);
+          result = await this.getResults(getResultUrl);
+          if (result) {
+              break;
+          }
+      }
+      return this.parseResult(result);
     }
     /**
      * Get the result
