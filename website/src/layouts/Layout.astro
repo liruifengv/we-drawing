@@ -14,7 +14,7 @@ const { title, description } = Astro.props as Props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="overflow-y-auto" >
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -43,14 +43,10 @@ const { title, description } = Astro.props as Props;
     crossorigin="anonymous"></script>
 	</head>
 	<body class="font-sans bg-gray-900 text-white">
-		<div class="h-screen overflow-hidden flex flex-col">
+		<div class="flex flex-col">
 			<Nav />
-			<div id="container" class="h-full flex-1 overflow-y-auto">
-				<div id="content">
-					<slot />
-				</div>
-				<Footer />
-			</div>
+      <slot />
+      <Footer />
 		</div>
 	</body>
 
