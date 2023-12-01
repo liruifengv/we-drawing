@@ -140,17 +140,11 @@ export class BingImageCreator {
         const normal_image_links = matches.map((link) => {
             return link.split("?w=")[0];
         });
+        // Remove Bad Images(https://r.bing.com/rp/xxx)
+        const safe_image_links = normal_image_links.filter(link => !/r.bing.com\/rp/i.test(link))
+        safe_image_links.length !== normal_image_links.length && console.log("Detected & Removed bad images")
         // Remove duplicates
-        const unique_image_links = [...new Set(normal_image_links)];
-        const bad_images = [
-            "https://r.bing.com/rp/in-2zU3AJUdkgFe7ZKv19yPBHVs.png",
-            "https://r.bing.com/rp/TX9QuO3WzcCJz1uaaSwQAz39Kb0.jpg",
-        ];
-        for (const img of unique_image_links) {
-            if (bad_images.includes(img)) {
-                throw new Error("Bad images");
-            }
-        }
+        const unique_image_links = [...new Set(safe_image_links)];
         // No images
         if (unique_image_links.length === 0) {
             throw new Error("error_no_images");
