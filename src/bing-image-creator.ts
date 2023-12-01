@@ -56,8 +56,10 @@ export class BingImageCreator {
             },
         });
         if (response.ok) {
+            // 200 is failed
             throw new Error("Request failed");
         } else {
+            // 302 is success
             const redirect_url = response.headers.get("location").replace("&nfy=1", "");
             const request_id = redirect_url.split("id=")[1];
             return {
