@@ -31,29 +31,31 @@ export class BingImageCreator {
         const url = `${BING_URL}/images/create?q=${encodedPrompt}&rt=3&FORM=GENCRE`;
 
         try {
-            const { redirect_url, request_id } = await this.fetchRedirectUrl(url);
+            const { redirect_url, request_id } = await this.fetchRedirectUrl(url, formData);
             return this.fetchResult(encodedPrompt, redirect_url, request_id);
         } catch (e) {
             // retry 1 time
             console.log("retry 1 time");
-            return this.fetchRedirectUrl(url)
+            return this.fetchRedirectUrl(url, formData)
                 .then((res) => {
                     return this.fetchResult(encodedPrompt, res.redirect_url, res.request_id);
                 })
                 .catch((e) => {
-                    throw new Error(`Request failed: ${e.message}`);
+                    throw new Error(`${e.message}`);
                 });
         }
     }
-    async fetchRedirectUrl(url: string) {
+    async fetchRedirectUrl(url: string, formData: FormData) {
         const response = await fetch(url, {
-            method: "GET",
+            method: "POST",
             mode: "cors",
             credentials: "include",
             headers: {
                 cookie: this._cookie,
                 ...HEADERS,
             },
+            body: formData,
+            redirect: "manual", // set to manual to prevent redirect
         });
         if (response.ok) {
             // 200 is failed
