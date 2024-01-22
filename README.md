@@ -11,6 +11,9 @@
 -   诗词由[今日诗词](https://www.jinrishici.com/)提供 API。
 -   网站使用 [Astro](https://astro.build) 构建。
 
+## 文章
+- [每天一句中国古诗词，通过 Bing DALL-E-3 生成 AI 图片](https://liruifengv.com/posts/daily-poetry-image)
+
 ## 订阅
 
 你可以使用 RSS 订阅每天的诗词配图：https://daily-poetry-image.vercel.app/rss.xml
