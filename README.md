@@ -2,9 +2,7 @@
 
 每天一句中国古诗词，生成 AI 图片 Powered by Bing DALL-E-3.
 
-### 👉🏽 [Live Demo in Vercel](https://daily-poetry-image.vercel.app/)
-
-### 👉🏽 [Live Demo in Cloudflare](https://daily-poetry-image.pages.dev/)
+### 👉🏽 [Live Demo](https://daily-poetry-image.vercel.app/)
 
 ## 项目介绍
 
