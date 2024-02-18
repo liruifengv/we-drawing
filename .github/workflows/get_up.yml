@@ -3,9 +3,6 @@ name: ci
 on:
     schedule:
         - cron: "0 23 * * *"
-    push:
-        branches:
-            - main
 
 jobs:
     CreateImage:
