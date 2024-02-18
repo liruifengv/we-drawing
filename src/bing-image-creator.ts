@@ -144,8 +144,8 @@ export class BingImageCreator {
         const normal_image_links = matches.map((link) => {
             return link.split("?w=")[0];
         });
-        // Remove Bad Images(https://r.bing.com/rp/xxx)
-        const safe_image_links = normal_image_links.filter((link) => !/r.bing.com\/rp/i.test(link));
+        // Remove Bad Images(https://r.bing.com/rp/xxx and /rp/xxx)
+        const safe_image_links = normal_image_links.filter((link) => !/r.bing.com\/rp/i.test(link) && !/\/rp\//i.test(link));
         safe_image_links.length !== normal_image_links.length && console.log("Detected & Removed bad images");
         // Remove duplicates
         const unique_image_links = [...new Set(safe_image_links)];
