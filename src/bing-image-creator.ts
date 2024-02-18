@@ -140,13 +140,16 @@ export class BingImageCreator {
         // Use regex to search for src=""
         const regex = /src="([^"]*)"/g;
         const matches = [...result.matchAll(regex)].map((match) => match[1]);
+        console.log("Found", matches.length, "images");
         // # Remove size limit
         const normal_image_links = matches.map((link) => {
             return link.split("?w=")[0];
         });
+        console.log("normal_image_links", normal_image_links);
         // Remove Bad Images(https://r.bing.com/rp/xxx)
         const safe_image_links = normal_image_links.filter((link) => !/r.bing.com\/rp/i.test(link)).filter((link) => !link.startsWith("http"));
         safe_image_links.length !== normal_image_links.length && console.log("Detected & Removed bad images");
+        console.log("safe_image_links", safe_image_links);
         // Remove duplicates
         const unique_image_links = [...new Set(safe_image_links)];
         // No images
