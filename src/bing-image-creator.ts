@@ -147,7 +147,10 @@ export class BingImageCreator {
         });
         console.log("normal_image_links", normal_image_links);
         // Remove Bad Images(https://r.bing.com/rp/xxx)
-        const safe_image_links = normal_image_links.filter((link) => !/r.bing.com\/rp/i.test(link)).filter((link) => !link.startsWith("http"));
+        const safe_image_links = normal_image_links
+          .filter((link) => !/r.bing.com\/rp/i.test(link))
+          .filter((link) => !/rp/i.test(link))
+          .filter((link) => link.startsWith("http"));
         safe_image_links.length !== normal_image_links.length && console.log("Detected & Removed bad images");
         console.log("safe_image_links", safe_image_links);
         // Remove duplicates
