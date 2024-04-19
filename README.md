@@ -14,6 +14,10 @@
 ## 文章
 - [每天一句中国古诗词，通过 Bing DALL-E-3 生成 AI 图片](https://liruifengv.com/posts/daily-poetry-image)
 
+## 进群交流
+
+欢迎加我微信 `liruifengv2333` 进 `新生代程序员群` 交流，群内聊前后端开发和 AI 技术。
+
 ## 订阅
 
 你可以使用 RSS 订阅每天的诗词配图：https://daily-poetry-image.vercel.app/rss.xml
