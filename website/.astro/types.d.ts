@@ -629,6 +629,371 @@ declare module 'astro:content' {
   collection: "images";
   data: InferEntrySchema<"images">
 };
+"1706482894710": {
+	id: "1706482894710";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1706569294275": {
+	id: "1706569294275";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1706655676248": {
+	id: "1706655676248";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1706742108288": {
+	id: "1706742108288";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1706828483067": {
+	id: "1706828483067";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1706914889332": {
+	id: "1706914889332";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707001285290": {
+	id: "1707001285290";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707087679561": {
+	id: "1707087679561";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707174092926": {
+	id: "1707174092926";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707260494895": {
+	id: "1707260494895";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707346901986": {
+	id: "1707346901986";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707433286797": {
+	id: "1707433286797";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1707519680855": {
+	id: "1707519680855";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708225229850": {
+	id: "1708225229850";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708297308857": {
+	id: "1708297308857";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708393594526": {
+	id: "1708393594526";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708470081436": {
+	id: "1708470081436";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708556510612": {
+	id: "1708556510612";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708642906614": {
+	id: "1708642906614";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708729272281": {
+	id: "1708729272281";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708815673938": {
+	id: "1708815673938";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708902073751": {
+	id: "1708902073751";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1708988492955": {
+	id: "1708988492955";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709074895265": {
+	id: "1709074895265";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709161283730": {
+	id: "1709161283730";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709247681880": {
+	id: "1709247681880";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709334056543": {
+	id: "1709334056543";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709420475550": {
+	id: "1709420475550";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709528962757": {
+	id: "1709528962757";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709593364400": {
+	id: "1709593364400";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709679708775": {
+	id: "1709679708775";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709766104460": {
+	id: "1709766104460";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1709852484371": {
+	id: "1709852484371";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710025258097": {
+	id: "1710025258097";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710111680055": {
+	id: "1710111680055";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710198100713": {
+	id: "1710198100713";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710284478388": {
+	id: "1710284478388";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710370885439": {
+	id: "1710370885439";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710543663203": {
+	id: "1710543663203";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710630073211": {
+	id: "1710630073211";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710716468942": {
+	id: "1710716468942";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1710975659454": {
+	id: "1710975659454";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711062067985": {
+	id: "1711062067985";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711148470762": {
+	id: "1711148470762";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711234864523": {
+	id: "1711234864523";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711321276072": {
+	id: "1711321276072";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711407677597": {
+	id: "1711407677597";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711494061420": {
+	id: "1711494061420";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711580469151": {
+	id: "1711580469151";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711666873233": {
+	id: "1711666873233";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711753265106": {
+	id: "1711753265106";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711839666730": {
+	id: "1711839666730";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1711926071230": {
+	id: "1711926071230";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1712012468196": {
+	id: "1712012468196";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1712098872021": {
+	id: "1712098872021";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1712816974677": {
+	id: "1712816974677";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1712876473529": {
+	id: "1712876473529";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1712962864081": {
+	id: "1712962864081";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713049309362": {
+	id: "1713049309362";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713137434982": {
+	id: "1713137434982";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713222077226": {
+	id: "1713222077226";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713308475045": {
+	id: "1713308475045";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713394868379": {
+	id: "1713394868379";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713481268019": {
+	id: "1713481268019";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713568373741": {
+	id: "1713568373741";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713654070551": {
+	id: "1713654070551";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713740467844": {
+	id: "1713740467844";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713826872454": {
+	id: "1713826872454";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713913273156": {
+	id: "1713913273156";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1713999667804": {
+	id: "1713999667804";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1714122869302": {
+	id: "1714122869302";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1714172470115": {
+	id: "1714172470115";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
+"1714258871931": {
+	id: "1714258871931";
+  collection: "images";
+  data: InferEntrySchema<"images">
+};
 };
 
 	};
