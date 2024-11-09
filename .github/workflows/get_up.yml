@@ -35,7 +35,7 @@ jobs:
 
             - name: Push New Pic
               run: |
-                  git config --local user.email "liruifeng1024@gmail.com"
+                  git config --local user.email "923828430@qq.com"
                   git config --local user.name "${{ github.actor }}"
                   git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
                   git add .

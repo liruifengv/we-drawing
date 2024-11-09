@@ -69,6 +69,8 @@ async function init() {
         }
     } else {
         throw new Error("Please provide a cookie using the --cookie argument");
+        // console.log("No cookie provided, skipping image generation");
+        // return; // 直接返回，不抛出错误
     }
 }
 
