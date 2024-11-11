@@ -20,7 +20,6 @@ async function listR2Objects(page = 1) {
     try {
         const command = new ListObjectsV2Command({
             Bucket: import.meta.env.CLOUDFLARE_BUCKET_NAME,
-            Prefix: "images/", // 假设图片在 images/ 前缀下
             MaxKeys: PAGE_SIZE,
             StartAfter: page > 1 
                 ? `images/page_${page - 1}_last_key` 
@@ -29,40 +28,44 @@ async function listR2Objects(page = 1) {
 
         const response = await r2Client.send(command);
         
+        // 检查 Contents 是否存在
+        if (!response.Contents) {
+            return { images: [], hasMore: false };
+        }
+
         // 过滤并处理对象
         const images = response.Contents
-            ?.filter(obj => obj.Key?.endsWith('.jpg'))
             .map(obj => ({
                 key: obj.Key!,
-                timestamp: extractTimestampFromKey(obj.Key!),
-                url: `https://pub-${import.meta.env.CLOUDFLARE_ACCOUNT_ID}.r2.dev/${obj.Key!}`
+                url: `https://p.robus.cloudns.be/raw/${obj.Key!}`,
+                lastModified: obj.LastModified
             }))
-            .sort((a, b) => b.timestamp - a.timestamp) || [];
+            .sort((a, b) => 
+                new Date(b.lastModified!).getTime() - 
+                new Date(a.lastModified!).getTime()
+            );
 
         return {
             images,
             hasMore: response.IsTruncated || false
         };
     } catch (error) {
-        console.error("Error listing R2 objects:", error);
+        console.error("列出 R2 对象时发生错误:", error);
         return { images: [], hasMore: false };
     }
 }
 
-// 从文件名中提取时间戳的辅助函数
-function extractTimestampFromKey(key: string): number {
-    // 假设文件名格式为 images/TIMESTAMP_description.jpg
-    const match = key.match(/images\/(\d+)_/);
-    return match ? parseInt(match[1]) : 0;
-}
-
-// 从文件名中提取日期的辅助函数
-function extractDateFromKey(key: string): string {
-    // 假设文件名格式为 images/TIMESTAMP_description.jpg
-    const match = key.match(/images\/(\d+)_/);
-    return match 
-        ? new Date(parseInt(match[1])).toLocaleDateString('zh-CN') 
-        : '未知日期';
+// 格式化日期
+function formatDate(date: Date): string {
+    return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    }).replace(',', ' ');
 }
 
 // 获取初始页面数据
@@ -70,37 +73,42 @@ const { images: initialImages, hasMore: initialHasMore } = await listR2Objects()
 
 // 获取页码（如果有的话）
 const currentPage = Number(Astro.url.searchParams.get('page') || 1);
+
+// 在文件顶部添加类型定义
+interface ImageItem {
+    url: string;
+    key: string;
+    lastModified: string | Date;
+}
 ---
 
 <Layout title="Album - Daily Poetry Images">
     <main class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-8">诗歌图册</h1>
+        <h1 class="text-3xl font-bold mb-8">相册</h1>
         
         <div 
             id="image-grid" 
             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
             {initialImages.map((image) => (
-                <div class="relative group masonry-item">
-                    <a href={image.url} target="_blank">
-                        <img 
-                            src={image.url}
-                            alt={`Image from ${image.key}`}
-                            class="w-full object-cover rounded-lg 
-                                   transition-transform duration-300 
-                                   group-hover:scale-105"
-                            loading="lazy"
-                        />
-                        <div class="absolute bottom-0 left-0 right-0 
-                                    bg-black bg-opacity-50 text-white 
-                                    p-2 rounded-b-lg opacity-0 
-                                    group-hover:opacity-100 
-                                    transition-opacity duration-300">
-                            <p class="text-sm truncate">
-                                {extractDateFromKey(image.key)}
-                            </p>
-                        </div>
-                    </a>
+                <div class="relative group masonry-item cursor-pointer" data-url={image.url}>
+                    <img 
+                        src={image.url}
+                        alt={`Image from ${image.key}`}
+                        class="w-full object-cover rounded-lg 
+                               transition-transform duration-300 
+                               group-hover:scale-105"
+                        loading="lazy"
+                    />
+                    <div class="absolute bottom-0 left-0 right-0 
+                                bg-black bg-opacity-50 text-white 
+                                p-2 rounded-b-lg opacity-0 
+                                group-hover:opacity-100 
+                                transition-opacity duration-300">
+                        <p class="text-sm truncate">
+                            {formatDate(new Date(image.lastModified!))}
+                        </p>
+                    </div>
                 </div>
             ))}
         </div>
@@ -115,82 +123,160 @@ const currentPage = Number(Astro.url.searchParams.get('page') || 1);
                 </button>
             </div>
         )}
+
+        <!-- 图片弹窗 -->
+        <div 
+            id="image-modal" 
+            class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden 
+                   flex items-center justify-center p-4"
+        >
+            <div class="relative max-w-full max-h-full">
+                <img 
+                    id="modal-image" 
+                    src="" 
+                    alt="Enlarged image" 
+                    class="max-w-full max-h-[90vh] object-contain"
+                />
+                <button 
+                    id="close-modal" 
+                    class="absolute top-2 right-2 text-white 
+                           bg-red-500 rounded-full p-2 hover:bg-red-600"
+                >
+                    关闭
+                </button>
+            </div>
+        </div>
     </main>
 
-    <script define:vars={{ currentPage, PAGE_SIZE }}>
-    document.addEventListener('DOMContentLoaded', () => {
-        const loadMoreBtn = document.getElementById('load-more');
-        let page = currentPage;
-        let isLoading = false;
+    <script>
+    // 添加接口定义
+    interface ImageItem {
+        url: string;
+        key: string;
+        lastModified: string | Date;
+    }
 
-        // 提取日期的辅助函数
-        const extractDateFromKey = (key) => {
-            const match = key.match(/images\/(\d+)_/);
-            return match 
-                ? new Date(parseInt(match[1])).toLocaleDateString('zh-CN') 
-                : '未知日期';
-        };
+    document.addEventListener('DOMContentLoaded', () => {
+        const imageGrid = document.getElementById('image-grid');
+        const imageModal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image') as HTMLImageElement;
+        const closeModalBtn = document.getElementById('close-modal');
+        const loadMoreBtn = document.getElementById('load-more');
+
+        // 添加空值检查和类型断言
+        if (!imageGrid || !imageModal || !modalImage || !closeModalBtn) {
+            console.error('One or more required elements are missing');
+            return;
+        }
+
+        // 图片点击事件
+        imageGrid.addEventListener('click', (e) => {
+            // 类型断言
+            const target = e.target as Element;
+            const imageContainer = target.closest('.masonry-item') as HTMLElement | null;
+            
+            if (imageContainer) {
+                const imageUrl = imageContainer.dataset.url;
+                if (imageUrl) {
+                    modalImage.src = imageUrl;
+                    imageModal.classList.remove('hidden');
+                    imageModal.classList.add('flex');
+                }
+            }
+        });
+
+        // 关闭弹窗事件
+        closeModalBtn.addEventListener('click', () => {
+            imageModal.classList.remove('flex');
+            imageModal.classList.add('hidden');
+        });
+
+        // 点击弹窗外部关闭
+        imageModal.addEventListener('click', (e) => {
+            // 类型断言
+            const target = e.target as Element;
+            if (target === imageModal) {
+                imageModal.classList.remove('flex');
+                imageModal.classList.add('hidden');
+            }
+        });
+
+        // 加载更多逻辑
+        let page = 1;
+        let isLoading = false;
 
         if (loadMoreBtn) {
             loadMoreBtn.addEventListener('click', async () => {
                 if (isLoading) return;
                 
                 isLoading = true;
-                loadMoreBtn.textContent = '加载中...';
-                loadMoreBtn.disabled = true;
+                
+                // 类型断言
+                const btn = loadMoreBtn as HTMLButtonElement;
+                btn.textContent = '加载中...';
+                btn.disabled = true;
 
                 try {
                     page++;
                     const response = await fetch(`/api/album-images?page=${page}`);
                     const { images, hasMore } = await response.json();
 
-                    const grid = document.getElementById('image-grid');
-                    images.forEach(image => {
+                    images.forEach((image: ImageItem) => {
                         const div = document.createElement('div');
-                        div.className = 'relative group masonry-item';
+                        div.className = 'relative group masonry-item cursor-pointer';
+                        div.dataset.url = image.url;
+                        
                         div.innerHTML = `
-                            <a href="${image.url}" target="_blank">
-                                <img 
-                                    src="${image.url}"
-                                    alt="Image from ${image.key}"
-                                    class="w-full object-cover rounded-lg 
-                                           transition-transform duration-300 
-                                           group-hover:scale-105"
-                                    loading="lazy"
-                                />
-                                <div class="absolute bottom-0 left-0 right-0 
-                                            bg-black bg-opacity-50 text-white 
-                                            p-2 rounded-b-lg opacity-0 
-                                            group-hover:opacity-100 
-                                            transition-opacity duration-300">
-                                    <p class="text-sm truncate">
-                                        ${extractDateFromKey(image.key)}
-                                    </p>
-                                </div>
-                            </a>
+                            <img 
+                                src="${image.url}"
+                                alt="Image from ${image.key}"
+                                class="w-full object-cover rounded-lg 
+                                       transition-transform duration-300 
+                                       group-hover:scale-105"
+                                loading="lazy"
+                            />
+                            <div class="absolute bottom-0 left-0 right-0 
+                                        bg-black bg-opacity-50 text-white 
+                                        p-2 rounded-b-lg opacity-0 
+                                        group-hover:opacity-100 
+                                        transition-opacity duration-300">
+                                <p class="text-sm truncate">
+                                    ${new Date(image.lastModified).toLocaleString('zh-CN', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: false
+                                    }).replace(',', ' ')}
+                                </p>
+                            </div>
                         `;
-                        grid.appendChild(div);
+                        
+                        // 添加空值检查
+                        if (imageGrid) {
+                            imageGrid.appendChild(div);
+                        }
                     });
 
-                    if (!hasMore) {
-                        loadMoreBtn.style.display = 'none';
+                    if (!hasMore && loadMoreBtn) {
+                        // 类型断言
+                        (loadMoreBtn as HTMLButtonElement).style.display = 'none';
                     }
                 } catch (error) {
                     console.error('加载更多图片失败:', error);
                 } finally {
                     isLoading = false;
-                    loadMoreBtn.textContent = '加载更多';
-                    loadMoreBtn.disabled = false;
+                    if (loadMoreBtn) {
+                        // 类型断言
+                        const btn = loadMoreBtn as HTMLButtonElement;
+                        btn.textContent = '加载更多';
+                        btn.disabled = false;
+                    }
                 }
             });
         }
     });
     </script>
-
-    <style>
-        .masonry-item {
-            break-inside: avoid;
-            page-break-inside: avoid;
-        }
-    </style>
 </Layout>
