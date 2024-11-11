@@ -12,11 +12,6 @@ export const GET: APIRoute = async ({ url }) => {
     const page = Number(url.searchParams.get('page') || 1);
     const PAGE_SIZE = 12;
 
-    console.log('Album Images API Called');
-    console.log('Page:', page);
-    console.log('Cloudflare Account ID:', import.meta.env.CLOUDFLARE_ACCOUNT_ID);
-    console.log('Bucket Name:', import.meta.env.CLOUDFLARE_BUCKET_NAME);
-
     const r2Client = new S3Client({
         region: "auto", 
         endpoint: `https://${import.meta.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -30,27 +25,21 @@ export const GET: APIRoute = async ({ url }) => {
     try {
         const command = new ListObjectsV2Command({
             Bucket: import.meta.env.CLOUDFLARE_BUCKET_NAME,
-            Prefix: "images/",
             MaxKeys: PAGE_SIZE,
             StartAfter: page > 1 
                 ? `images/page_${page - 1}_last_key` 
                 : undefined
         });
 
-        console.log('Sending R2 List Objects Command');
-
         const response = await r2Client.send(command);
         
-        console.log('R2 Response Metadata:', JSON.stringify(response.$metadata, null, 2));
-        console.log('Total Objects Count:', response.Contents?.length);
-        console.log('Is Truncated:', response.IsTruncated);
-
-        response.Contents?.forEach((obj, index) => {
-            console.log(`Object ${index + 1} Key:`, obj.Key);
-        });
-
         const images = response.Contents
-            ?.map(obj => ({
+            ?.filter(obj => 
+                obj.Key && 
+                !obj.Key.includes('_$flaredrive$/')
+                // && !obj.Key.endsWith('.ico')
+            )
+            .map(obj => ({
                 key: obj.Key,
                 url: `https://p.robus.cloudns.be/raw/${obj.Key}`,
                 lastModified: obj.LastModified
@@ -60,7 +49,7 @@ export const GET: APIRoute = async ({ url }) => {
                 new Date(a.lastModified!).getTime()
             ) || [];
 
-        console.log('Processed Images Count:', images.length);
+        // console.log('Processed Images Count:', images.length);
 
         return new Response(JSON.stringify({
             images,

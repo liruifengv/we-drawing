@@ -1,59 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
-
-// 分页配置
-const PAGE_SIZE = 12; // 每页显示图片数量
-
-// Cloudflare R2 配置
-const r2Client = new S3Client({
-    region: "auto", 
-    endpoint: `https://${import.meta.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    credentials: {
-        accessKeyId: import.meta.env.CLOUDFLARE_ACCESS_KEY_ID,
-        secretAccessKey: import.meta.env.CLOUDFLARE_SECRET_ACCESS_KEY
-    }
-});
-
-// 获取 R2 存储桶中的对象（支持分页）
-async function listR2Objects(page = 1) {
-    try {
-        const command = new ListObjectsV2Command({
-            Bucket: import.meta.env.CLOUDFLARE_BUCKET_NAME,
-            MaxKeys: PAGE_SIZE,
-            StartAfter: page > 1 
-                ? `images/page_${page - 1}_last_key` 
-                : undefined
-        });
-
-        const response = await r2Client.send(command);
-        
-        // 检查 Contents 是否存在
-        if (!response.Contents) {
-            return { images: [], hasMore: false };
-        }
-
-        // 过滤并处理对象
-        const images = response.Contents
-            .map(obj => ({
-                key: obj.Key!,
-                url: `https://p.robus.cloudns.be/raw/${obj.Key!}`,
-                lastModified: obj.LastModified
-            }))
-            .sort((a, b) => 
-                new Date(b.lastModified!).getTime() - 
-                new Date(a.lastModified!).getTime()
-            );
-
-        return {
-            images,
-            hasMore: response.IsTruncated || false
-        };
-    } catch (error) {
-        console.error("列出 R2 对象时发生错误:", error);
-        return { images: [], hasMore: false };
-    }
-}
 
 // 格式化日期
 function formatDate(date: Date): string {
@@ -69,7 +15,8 @@ function formatDate(date: Date): string {
 }
 
 // 获取初始页面数据
-const { images: initialImages, hasMore: initialHasMore } = await listR2Objects();
+const initialResponse = await fetch(`${Astro.url.origin}/api/album-images?page=1`);
+const { images: initialImages, hasMore: initialHasMore } = await initialResponse.json();
 
 // 获取页码（如果有的话）
 const currentPage = Number(Astro.url.searchParams.get('page') || 1);
@@ -88,26 +35,28 @@ interface ImageItem {
         
         <div 
             id="image-grid" 
-            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
+                   gap-2 sm:gap-4 
+                   auto-rows-min"
         >
-            {initialImages.map((image) => (
-                <div class="relative group masonry-item cursor-pointer" data-url={image.url}>
-                    <img 
-                        src={image.url}
-                        alt={`Image from ${image.key}`}
-                        class="w-full object-cover rounded-lg 
-                               transition-transform duration-300 
-                               group-hover:scale-105"
-                        loading="lazy"
-                    />
-                    <div class="absolute bottom-0 left-0 right-0 
-                                bg-black bg-opacity-50 text-white 
-                                p-2 rounded-b-lg opacity-0 
-                                group-hover:opacity-100 
-                                transition-opacity duration-300">
-                        <p class="text-sm truncate">
-                            {formatDate(new Date(image.lastModified!))}
-                        </p>
+            {initialImages.map((image: ImageItem) => (
+                <div class="masonry-item relative group cursor-pointer" data-url={image.url}>
+                    <div class="relative overflow-hidden rounded-lg">
+                        <img 
+                            src={image.url}
+                            alt={`Image from ${image.key}`}
+                            class="w-full h-auto object-cover 
+                                   transform transition-transform duration-300 
+                                   group-hover:scale-105"
+                            loading="lazy"
+                        />
+                        <div class="absolute bottom-0 left-0 right-0 
+                                    bg-black bg-opacity-50 text-white 
+                                    p-2 rounded-b-lg">
+                            <p class="text-xs sm:text-sm truncate">
+                                {formatDate(new Date(image.lastModified!))}
+                            </p>
+                        </div>
                     </div>
                 </div>
             ))}
@@ -117,7 +66,8 @@ interface ImageItem {
             <div class="flex justify-center mt-8">
                 <button 
                     id="load-more" 
-                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    class="px-4 py-2 bg-blue-500 text-white rounded 
+                           hover:bg-blue-600 transition-colors"
                 >
                     加载更多
                 </button>
@@ -128,7 +78,7 @@ interface ImageItem {
         <div 
             id="image-modal" 
             class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden 
-                   flex items-center justify-center p-4"
+                   items-center justify-center p-4"
         >
             <div class="relative max-w-full max-h-full">
                 <img 
@@ -140,7 +90,8 @@ interface ImageItem {
                 <button 
                     id="close-modal" 
                     class="absolute top-2 right-2 text-white 
-                           bg-red-500 rounded-full p-2 hover:bg-red-600"
+                           bg-red-500 rounded-full p-2 
+                           hover:bg-red-600 transition-colors"
                 >
                     关闭
                 </button>
@@ -148,132 +99,61 @@ interface ImageItem {
         </div>
     </main>
 
-    <script>
-    // 添加接口定义
-    interface ImageItem {
-        url: string;
-        key: string;
-        lastModified: string | Date;
-    }
-
+    <script define:vars={{ currentPage }}>
     document.addEventListener('DOMContentLoaded', () => {
-        const imageGrid = document.getElementById('image-grid');
-        const imageModal = document.getElementById('image-modal');
-        const modalImage = document.getElementById('modal-image') as HTMLImageElement;
-        const closeModalBtn = document.getElementById('close-modal');
         const loadMoreBtn = document.getElementById('load-more');
-
-        // 添加空值检查和类型断言
-        if (!imageGrid || !imageModal || !modalImage || !closeModalBtn) {
-            console.error('One or more required elements are missing');
-            return;
-        }
-
-        // 图片点击事件
-        imageGrid.addEventListener('click', (e) => {
-            // 类型断言
-            const target = e.target as Element;
-            const imageContainer = target.closest('.masonry-item') as HTMLElement | null;
-            
-            if (imageContainer) {
-                const imageUrl = imageContainer.dataset.url;
-                if (imageUrl) {
-                    modalImage.src = imageUrl;
-                    imageModal.classList.remove('hidden');
-                    imageModal.classList.add('flex');
-                }
-            }
-        });
-
-        // 关闭弹窗事件
-        closeModalBtn.addEventListener('click', () => {
-            imageModal.classList.remove('flex');
-            imageModal.classList.add('hidden');
-        });
-
-        // 点击弹窗外部关闭
-        imageModal.addEventListener('click', (e) => {
-            // 类型断言
-            const target = e.target as Element;
-            if (target === imageModal) {
-                imageModal.classList.remove('flex');
-                imageModal.classList.add('hidden');
-            }
-        });
-
-        // 加载更多逻辑
-        let page = 1;
-        let isLoading = false;
+        const imageGrid = document.getElementById('image-grid');
 
         if (loadMoreBtn) {
             loadMoreBtn.addEventListener('click', async () => {
-                if (isLoading) return;
-                
-                isLoading = true;
-                
-                // 类型断言
-                const btn = loadMoreBtn as HTMLButtonElement;
-                btn.textContent = '加载中...';
-                btn.disabled = true;
-
                 try {
-                    page++;
+                    const page = currentPage + 1;
                     const response = await fetch(`/api/album-images?page=${page}`);
                     const { images, hasMore } = await response.json();
 
-                    images.forEach((image: ImageItem) => {
+                    images.forEach((image) => {
                         const div = document.createElement('div');
-                        div.className = 'relative group masonry-item cursor-pointer';
+                        div.className = 'masonry-item relative group cursor-pointer';
                         div.dataset.url = image.url;
                         
                         div.innerHTML = `
-                            <img 
-                                src="${image.url}"
-                                alt="Image from ${image.key}"
-                                class="w-full object-cover rounded-lg 
-                                       transition-transform duration-300 
-                                       group-hover:scale-105"
-                                loading="lazy"
-                            />
-                            <div class="absolute bottom-0 left-0 right-0 
-                                        bg-black bg-opacity-50 text-white 
-                                        p-2 rounded-b-lg opacity-0 
-                                        group-hover:opacity-100 
-                                        transition-opacity duration-300">
-                                <p class="text-sm truncate">
-                                    ${new Date(image.lastModified).toLocaleString('zh-CN', {
-                                        year: 'numeric',
-                                        month: '2-digit',
-                                        day: '2-digit',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        second: '2-digit',
-                                        hour12: false
-                                    }).replace(',', ' ')}
-                                </p>
+                            <div class="relative overflow-hidden rounded-lg">
+                                <img 
+                                    src="${image.url}"
+                                    alt="Image from ${image.key}"
+                                    class="w-full h-auto object-cover 
+                                           transform transition-transform duration-300 
+                                           group-hover:scale-105"
+                                    loading="lazy"
+                                />
+                                <div class="absolute bottom-0 left-0 right-0 
+                                            bg-black bg-opacity-50 text-white 
+                                            p-2 rounded-b-lg">
+                                    <p class="text-xs sm:text-sm truncate">
+                                        ${new Date(image.lastModified).toLocaleString('zh-CN', {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                            hour12: false
+                                        }).replace(',', ' ')}
+                                    </p>
+                                </div>
                             </div>
                         `;
                         
-                        // 添加空值检查
                         if (imageGrid) {
                             imageGrid.appendChild(div);
                         }
                     });
 
                     if (!hasMore && loadMoreBtn) {
-                        // 类型断言
-                        (loadMoreBtn as HTMLButtonElement).style.display = 'none';
+                        loadMoreBtn.style.display = 'none';
                     }
                 } catch (error) {
                     console.error('加载更多图片失败:', error);
-                } finally {
-                    isLoading = false;
-                    if (loadMoreBtn) {
-                        // 类型断言
-                        const btn = loadMoreBtn as HTMLButtonElement;
-                        btn.textContent = '加载更多';
-                        btn.disabled = false;
-                    }
                 }
             });
         }
