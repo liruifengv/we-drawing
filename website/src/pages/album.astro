@@ -1,0 +1,196 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
+
+// 分页配置
+const PAGE_SIZE = 12; // 每页显示图片数量
+
+// Cloudflare R2 配置
+const r2Client = new S3Client({
+    region: "auto", 
+    endpoint: `https://${import.meta.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+        accessKeyId: import.meta.env.CLOUDFLARE_ACCESS_KEY_ID,
+        secretAccessKey: import.meta.env.CLOUDFLARE_SECRET_ACCESS_KEY
+    }
+});
+
+// 获取 R2 存储桶中的对象（支持分页）
+async function listR2Objects(page = 1) {
+    try {
+        const command = new ListObjectsV2Command({
+            Bucket: import.meta.env.CLOUDFLARE_BUCKET_NAME,
+            Prefix: "images/", // 假设图片在 images/ 前缀下
+            MaxKeys: PAGE_SIZE,
+            StartAfter: page > 1 
+                ? `images/page_${page - 1}_last_key` 
+                : undefined
+        });
+
+        const response = await r2Client.send(command);
+        
+        // 过滤并处理对象
+        const images = response.Contents
+            ?.filter(obj => obj.Key?.endsWith('.jpg'))
+            .map(obj => ({
+                key: obj.Key!,
+                timestamp: extractTimestampFromKey(obj.Key!),
+                url: `https://pub-${import.meta.env.CLOUDFLARE_ACCOUNT_ID}.r2.dev/${obj.Key!}`
+            }))
+            .sort((a, b) => b.timestamp - a.timestamp) || [];
+
+        return {
+            images,
+            hasMore: response.IsTruncated || false
+        };
+    } catch (error) {
+        console.error("Error listing R2 objects:", error);
+        return { images: [], hasMore: false };
+    }
+}
+
+// 从文件名中提取时间戳的辅助函数
+function extractTimestampFromKey(key: string): number {
+    // 假设文件名格式为 images/TIMESTAMP_description.jpg
+    const match = key.match(/images\/(\d+)_/);
+    return match ? parseInt(match[1]) : 0;
+}
+
+// 从文件名中提取日期的辅助函数
+function extractDateFromKey(key: string): string {
+    // 假设文件名格式为 images/TIMESTAMP_description.jpg
+    const match = key.match(/images\/(\d+)_/);
+    return match 
+        ? new Date(parseInt(match[1])).toLocaleDateString('zh-CN') 
+        : '未知日期';
+}
+
+// 获取初始页面数据
+const { images: initialImages, hasMore: initialHasMore } = await listR2Objects();
+
+// 获取页码（如果有的话）
+const currentPage = Number(Astro.url.searchParams.get('page') || 1);
+---
+
+<Layout title="Album - Daily Poetry Images">
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">诗歌图册</h1>
+        
+        <div 
+            id="image-grid" 
+            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+            {initialImages.map((image) => (
+                <div class="relative group masonry-item">
+                    <a href={image.url} target="_blank">
+                        <img 
+                            src={image.url}
+                            alt={`Image from ${image.key}`}
+                            class="w-full object-cover rounded-lg 
+                                   transition-transform duration-300 
+                                   group-hover:scale-105"
+                            loading="lazy"
+                        />
+                        <div class="absolute bottom-0 left-0 right-0 
+                                    bg-black bg-opacity-50 text-white 
+                                    p-2 rounded-b-lg opacity-0 
+                                    group-hover:opacity-100 
+                                    transition-opacity duration-300">
+                            <p class="text-sm truncate">
+                                {extractDateFromKey(image.key)}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            ))}
+        </div>
+
+        {initialHasMore && (
+            <div class="flex justify-center mt-8">
+                <button 
+                    id="load-more" 
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    加载更多
+                </button>
+            </div>
+        )}
+    </main>
+
+    <script define:vars={{ currentPage, PAGE_SIZE }}>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadMoreBtn = document.getElementById('load-more');
+        let page = currentPage;
+        let isLoading = false;
+
+        // 提取日期的辅助函数
+        const extractDateFromKey = (key) => {
+            const match = key.match(/images\/(\d+)_/);
+            return match 
+                ? new Date(parseInt(match[1])).toLocaleDateString('zh-CN') 
+                : '未知日期';
+        };
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', async () => {
+                if (isLoading) return;
+                
+                isLoading = true;
+                loadMoreBtn.textContent = '加载中...';
+                loadMoreBtn.disabled = true;
+
+                try {
+                    page++;
+                    const response = await fetch(`/api/album-images?page=${page}`);
+                    const { images, hasMore } = await response.json();
+
+                    const grid = document.getElementById('image-grid');
+                    images.forEach(image => {
+                        const div = document.createElement('div');
+                        div.className = 'relative group masonry-item';
+                        div.innerHTML = `
+                            <a href="${image.url}" target="_blank">
+                                <img 
+                                    src="${image.url}"
+                                    alt="Image from ${image.key}"
+                                    class="w-full object-cover rounded-lg 
+                                           transition-transform duration-300 
+                                           group-hover:scale-105"
+                                    loading="lazy"
+                                />
+                                <div class="absolute bottom-0 left-0 right-0 
+                                            bg-black bg-opacity-50 text-white 
+                                            p-2 rounded-b-lg opacity-0 
+                                            group-hover:opacity-100 
+                                            transition-opacity duration-300">
+                                    <p class="text-sm truncate">
+                                        ${extractDateFromKey(image.key)}
+                                    </p>
+                                </div>
+                            </a>
+                        `;
+                        grid.appendChild(div);
+                    });
+
+                    if (!hasMore) {
+                        loadMoreBtn.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('加载更多图片失败:', error);
+                } finally {
+                    isLoading = false;
+                    loadMoreBtn.textContent = '加载更多';
+                    loadMoreBtn.disabled = false;
+                }
+            });
+        }
+    });
+    </script>
+
+    <style>
+        .masonry-item {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+    </style>
+</Layout>
