@@ -6,12 +6,8 @@ function formatDate(date: Date): string {
     return date.toLocaleString('zh-CN', {
         year: 'numeric',
         month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    }).replace(',', ' ');
+        day: '2-digit'
+    }).replace(/\//g, '.');
 }
 
 // 获取初始页面数据
@@ -36,24 +32,26 @@ interface ImageItem {
         <div 
             id="image-grid" 
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 
-                   gap-2 sm:gap-4 
+                   gap-4 
                    auto-rows-min"
         >
             {initialImages.map((image: ImageItem) => (
                 <div class="masonry-item relative group cursor-pointer" data-url={image.url}>
-                    <div class="relative overflow-hidden rounded-lg">
+                    <div class="relative overflow-hidden rounded-xl shadow-lg transition-all 
+                                duration-300 hover:shadow-xl">
                         <img 
                             src={image.url}
                             alt={`Image from ${image.key}`}
-                            class="w-full h-auto object-cover 
+                            class="w-full h-auto object-cover rounded-xl 
                                    transform transition-transform duration-300 
                                    group-hover:scale-105"
                             loading="lazy"
                         />
                         <div class="absolute bottom-0 left-0 right-0 
-                                    bg-black bg-opacity-50 text-white 
-                                    p-2 rounded-b-lg">
-                            <p class="text-xs sm:text-sm truncate">
+                                    bg-white bg-opacity-80 
+                                    text-gray-700 text-center
+                                    p-2 rounded-b-xl">
+                            <p class="text-xs font-light">
                                 {formatDate(new Date(image.lastModified!))}
                             </p>
                         </div>
@@ -66,8 +64,9 @@ interface ImageItem {
             <div class="flex justify-center mt-8">
                 <button 
                     id="load-more" 
-                    class="px-4 py-2 bg-blue-500 text-white rounded 
-                           hover:bg-blue-600 transition-colors"
+                    class="px-6 py-2 bg-gray-100 text-gray-800 rounded-full 
+                           hover:bg-gray-200 transition-colors 
+                           shadow-md hover:shadow-lg"
                 >
                     加载更多
                 </button>
@@ -85,13 +84,13 @@ interface ImageItem {
                     id="modal-image" 
                     src="" 
                     alt="Enlarged image" 
-                    class="max-w-full max-h-[90vh] object-contain"
+                    class="max-w-full max-h-[90vh] object-contain rounded-xl"
                 />
                 <button 
                     id="close-modal" 
-                    class="absolute top-2 right-2 text-white 
-                           bg-red-500 rounded-full p-2 
-                           hover:bg-red-600 transition-colors"
+                    class="absolute top-4 right-4 text-white 
+                           bg-gray-700 bg-opacity-50 rounded-full p-2 
+                           hover:bg-opacity-70 transition-all"
                 >
                     关闭
                 </button>
@@ -103,13 +102,25 @@ interface ImageItem {
     document.addEventListener('DOMContentLoaded', () => {
         const loadMoreBtn = document.getElementById('load-more');
         const imageGrid = document.getElementById('image-grid');
+        
+        // 用于存储 ContinuationToken
+        let continuationToken = null;
 
         if (loadMoreBtn) {
             loadMoreBtn.addEventListener('click', async () => {
                 try {
-                    const page = currentPage + 1;
-                    const response = await fetch(`/api/album-images?page=${page}`);
-                    const { images, hasMore } = await response.json();
+                    // 构建 URL，包含 ContinuationToken
+                    const url = new URL('/api/album-images', window.location.origin);
+                    url.searchParams.set('page', (currentPage + 1).toString());
+                    if (continuationToken) {
+                        url.searchParams.set('continuationToken', continuationToken);
+                    }
+
+                    const response = await fetch(url.toString());
+                    const { images, hasMore, continuationToken: nextContinuationToken } = await response.json();
+
+                    // 更新 ContinuationToken
+                    continuationToken = nextContinuationToken;
 
                     images.forEach((image) => {
                         const div = document.createElement('div');
@@ -117,28 +128,26 @@ interface ImageItem {
                         div.dataset.url = image.url;
                         
                         div.innerHTML = `
-                            <div class="relative overflow-hidden rounded-lg">
+                            <div class="relative overflow-hidden rounded-xl shadow-lg transition-all 
+                                        duration-300 hover:shadow-xl">
                                 <img 
                                     src="${image.url}"
                                     alt="Image from ${image.key}"
-                                    class="w-full h-auto object-cover 
+                                    class="w-full h-auto object-cover rounded-xl 
                                            transform transition-transform duration-300 
                                            group-hover:scale-105"
                                     loading="lazy"
                                 />
                                 <div class="absolute bottom-0 left-0 right-0 
-                                            bg-black bg-opacity-50 text-white 
-                                            p-2 rounded-b-lg">
-                                    <p class="text-xs sm:text-sm truncate">
+                                            bg-white bg-opacity-80 
+                                            text-gray-700 text-center
+                                            p-2 rounded-b-xl">
+                                    <p class="text-xs font-light">
                                         ${new Date(image.lastModified).toLocaleString('zh-CN', {
                                             year: 'numeric',
                                             month: '2-digit',
-                                            day: '2-digit',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            second: '2-digit',
-                                            hour12: false
-                                        }).replace(',', ' ')}
+                                            day: '2-digit'
+                                        }).replace(/\//g, '.')}
                                     </p>
                                 </div>
                             </div>
@@ -149,6 +158,7 @@ interface ImageItem {
                         }
                     });
 
+                    // 如果没有更多数据，隐藏加载更多按钮
                     if (!hasMore && loadMoreBtn) {
                         loadMoreBtn.style.display = 'none';
                     }

@@ -6,6 +6,9 @@ module.exports = {
             width: {
                 96: "24rem",
             },
+            // colors:{
+            //     primary: '#FFFFFF',
+            // }
         },
     },
     plugins: [],
