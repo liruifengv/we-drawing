@@ -2,7 +2,11 @@
 import Layout from '../../layouts/Layout.astro';
 import ImageDetails from '../../components/ImageDetails.astro';
 import { getCollection, type CollectionEntry } from "astro:content";
-
+// 当你运行 npm run build 时
+// Astro 会执行 getStaticPaths()
+// 获取所有图片数据
+// 为每个图片预先生成一个静态 HTML 页面
+// 这些页面会被保存在 dist 目录中
 export async function getStaticPaths() {
   const images = await getCollection("images")
 
