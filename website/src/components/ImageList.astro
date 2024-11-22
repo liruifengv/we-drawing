@@ -2,6 +2,8 @@
 import ImageCard from './ImageCard.astro';
 import { getCollection } from "astro:content";
 
+// 获取 src/content/images 目录下的所有内容（在这个项目中是 JSON 文件）
+// 自动解析这些文件并将它们转换为可用的数据对象
 const images = await getCollection("images");
 
 const sortedImages = images.sort(
@@ -17,6 +19,7 @@ const sortedImages = images.sort(
 		<h2 class="tracking-wider text-orange-500 text-lg font-semibold">AI Images</h2>
 		<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 lg:grid-cols-4 gap-8">
       {
+        // 这里 item={item.data} 是在向 ImageCard 组件传递一个名为 item 的 prop，其值是 item.data
         sortedImages.length > 0 ? sortedImages.map((item) => <ImageCard item={item.data} />) : <p>No images found</p>
       }
 		</div>
