@@ -53,3 +53,17 @@ main 字段指定了项目的入口文件是 cli.js。这意味着当你直接�
 # 这个脚本先用 TypeScript 编译（但不输出任何文件），然后使用 esbuild 将 bin/cli.ts 文件打包到 dist 目录下。
 "build": "tsc --noEmit && esbuild \"bin/cli.ts\" --bundle --platform=node --target=node16 --outdir=dist",
 ```
+
+整个流程是：
+
+GitHub Actions 生成新图片
+提交到仓库
+触发网站重新构建
+生成新的静态页面
+部署更新后的网站
+这是一个很好的自动化流程：
+
+自动生成内容
+自动更新网站
+完全静态化，性能好
+不需要服务器维护
