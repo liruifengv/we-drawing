@@ -12,3 +12,13 @@ export const HEADERS: { [key: string]: string } = {
 };
 
 export const SENTENCE_API = "https://v1.jinrishici.com/all";
+
+export const FLUX_URL = "https://api.siliconflow.cn/v1/images/generations";
+export const FLUX_CONFIG = {
+    model: "black-forest-labs/FLUX.1-schnell",
+    image_size: "1024x1024",
+    batch_size: 2,
+    seed: 4999999999,
+    num_inference_steps: 50,
+    guidance_scale: 50,
+};

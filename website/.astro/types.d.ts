@@ -178,7 +178,19 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		"images": {
+		"flux_images": {
+"1698917118499": {
+	id: "1698917118499";
+  collection: "flux_images";
+  data: InferEntrySchema<"flux_images">
+};
+"1732330549897": {
+	id: "1732330549897";
+  collection: "flux_images";
+  data: InferEntrySchema<"flux_images">
+};
+};
+"images": {
 "1698916978723": {
 	id: "1698916978723";
   collection: "images";

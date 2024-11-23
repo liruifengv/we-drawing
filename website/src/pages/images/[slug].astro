@@ -9,26 +9,45 @@ import { getCollection, type CollectionEntry } from "astro:content";
 // 这些页面会被保存在 dist 目录中
 export async function getStaticPaths() {
   const images = await getCollection("images")
+  const fluxImages = await getCollection("flux_images");
+
+  return [
+    ...images.map(img => ({
+      params: { slug: img.data.localImagesPath },
+      props: { data: img.data, source: 'images' },
+    })),
+    ...fluxImages.map(img => ({
+      params: { slug: img.data.localImagesPath },
+      props: { data: img.data, source: 'flux_images' },
+    }))
+  ];
 
   // 为每个图片生成一个路由
-  return images.map(img => ({
-    // slug 参数将作为 URL 的一部分：/images/{slug}
-    params: { slug: img.data.localImagesPath },
-    // 将整个图片数据传递给页面组件
-    props: img,
-  }));
+  // return [...images, ...fluxImages].map(img => ({
+  //   // slug 参数将作为 URL 的一部分：/images/{slug}
+  //   params: { slug: img.data.localImagesPath },
+  //   // 将整个图片数据传递给页面组件
+  //   props: img,
+  // }));
 }
 
 // 定义页面组件的 props 类型
 // CollectionEntry 是 Astro 提供的泛型类型
 // 'images' 对应 content/images 目录
-type Props = CollectionEntry<'images'>
+// type Props = CollectionEntry<'images'> | CollectionEntry<'flux_images'>
+
+type Props = {
+  data: CollectionEntry<'images'>['data'] | CollectionEntry<'flux_images'>['data'];
+  source: 'images' | 'flux_images';
+}
+
 
 // 获取从 getStaticPaths 传递的数据
-const img = Astro.props
+const { data, source } = Astro.props;
+
 
 ---
 <!-- 页面渲染： -->
-<Layout title={`${img.data.content}`}>
-	<ImageDetails data={img.data} />
+<Layout title={`${data.content}`}>
+	<ImageDetails data={data} source={source} />
 </Layout>

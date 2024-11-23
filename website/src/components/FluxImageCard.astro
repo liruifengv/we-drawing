@@ -1,0 +1,33 @@
+---
+// 父组件（ImageList）通过属性传递数据：<ImageCard item={item.data} />
+// 子组件（ImageCard）通过 Astro.props 接收数据：const { item } = Astro.props;
+// 这行代码通过解构赋值从 Astro.props 中获取名为 item 的 prop，正是从 ImageList 传递过来的 item.data
+const { item } = Astro.props;
+
+const path = `/flux_images/${item.localImagesPath}/0.jpg`
+
+---
+<!-- 这就是完整的数据流向：JSON文件 -> getCollection -> ImageList -> ImageCard -> 页面显示。 -->
+<div class="mt-8">
+	<!-- 这是一个链接标签，点击后会跳转到 /flux_images/[图片路径] -->
+	<!-- item.localImagesPath 是图片的本地存储路径 -->
+	<!-- 跳转地址 -->
+	<a href={`/images/${item.localImagesPath}`}>
+		<img
+			src={path}
+			alt={`${item.content} Poster`}
+			class="thumbnail hover:opacity-75 transition ease-in-out duration-150"
+			id={`image-poster-${item.localImagesPath}`}
+			transition:name={`poster-${item.localImagesPath}-0`}
+		/>
+	</a>
+	<div class="mt-2">
+		<a href={`/images/${item.localImagesPath}`} class="text-lg mt-2 hover:text-gray-300" transition:name={`${item.content}`}>{item.content}</a>
+		<div class="flex items-center text-gray-400 text-sm mt-1">
+			<span class="ml-1">《{item.origin}》</span>
+			<span class="mx-2">|</span>
+			<span>{item.author}</span>
+		</div>
+		<div class="text-gray-400 text-sm">{item.date}</div>
+	</div>
+</div>

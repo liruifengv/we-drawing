@@ -1,4 +1,4 @@
-import { getImageBySentence } from "../src/get-up";
+import { getImageBySentence, getFluxImageBySentence } from "../src/get-up";
 import type { Response } from "../src/types";
 import path from "path";
 import fs from "fs";
@@ -75,7 +75,66 @@ async function init() {
             console.error(e);
             process.exit(1);
         }
-    } else {
+    } else if (argv.token) {
+        try {
+            // 获取图片并处理
+            const res: Response = await getFluxImageBySentence(argv.token);
+            console.log("Create Successful: ", res);
+            // 创建目录结构
+            const outputPath = path.join(cwd, "website/public");
+            const imagesPath = path.join(outputPath, "flux_images");
+            if (!fs.existsSync(imagesPath)) {
+                fs.mkdirSync(imagesPath);
+            }
+
+            // 在 images 目录下，创建一个以时间戳命名的文件夹，将图片放入其中
+            const imagesFolderName = Date.now().toString();
+            const imagesFolderPath = path.join(imagesPath, imagesFolderName);
+            if (!fs.existsSync(imagesFolderPath)) {
+                fs.mkdirSync(imagesFolderPath);
+            }
+
+            //遍历图片列表，为每张图片创建文件名并发起下载请求。
+            res.images.forEach((image, index) => {
+                const imageFileName = `${index}.jpg`;
+                const imageFilePath = path.join(imagesFolderPath, imageFileName);
+                
+                // 下载图片
+                fetch(image).then((response) => {
+                    if (!response.ok) throw new Error(`下载图片失败: ${response.statusText}`);
+                    // 使用 fetch 获取图片数据，然后用 pipeline 将数据流写入文件。
+                    // @ts-ignore
+                    pipeline(response.body, fs.createWriteStream(imageFilePath)).catch((e) => {
+                        console.error("Something went wrong while saving the image", e);
+                    });
+                });
+            });
+
+            const options = { timeZone: "Asia/Shanghai", hour12: false };
+            const outputData = {
+                ...res,
+                date: new Date().toLocaleString("zh-CN", options),
+                localImagesPath: imagesFolderName,
+            };
+
+            // 保存元数据
+            const contentPath = path.join(cwd, "website/src/content/flux_images");
+            // 创建包含图片信息和下载时间等的 JSON 文件。
+            const contentFile = path.join(contentPath, `${imagesFolderName}.json`);
+            // 使用 fs.writeFileSync 同步地写入文件，因为这是一个相对较小的数据量。
+            fs.writeFileSync(contentFile, JSON.stringify(outputData));
+
+            // 为了确保所有图片下载完成，设置了一个5秒的延迟再退出程序。
+            setTimeout(() => {
+                // 为了让图片下载完毕，再退出进程
+                process.exit(0);
+            }, 5000);
+        } catch (error) {
+            console.error("Error:", error);
+            process.exit(1);
+        }
+    } 
+    else {
         throw new Error("Please provide a cookie using the --cookie argument");
         // console.log("No cookie provided, skipping image generation");
         // return; // 直接返回，不抛出错误

@@ -1,12 +1,10 @@
 ---
-// const { data } = Astro.props;
-const { data, source } = Astro.props;
-
+const { data } = Astro.props;
 
 const images: string[] = []
 
 data.images.forEach((item: string, index: number) => {
-  const path = `/${source}/${data.localImagesPath}/${index}.jpg`
+  const path = `/flux_images/${data.localImagesPath}/${index}.jpg`
   images.push(path)
 });
 
