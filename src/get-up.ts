@@ -52,7 +52,7 @@ async function getFluxImageBySentence(token: string): Promise<Response> {
     const res = await getSentence();
     console.log("获取句子结果: ", res);
 
-    const prompt = `${res.content+ systemPrompt}, textless`;
+    const prompt = `${res.content + systemPrompt}, textless`;
     try {
         const images = await fluxImageCreator.createImage(prompt);
         return {
@@ -66,7 +66,7 @@ async function getFluxImageBySentence(token: string): Promise<Response> {
         throw new Error(`图片生成失败: ${error.message}`);
     }
 }
-const systemPrompt =  `
+const systemPrompt = `
 "关键词公式
 主题（加下面的）
 +环境（背景，周围）
