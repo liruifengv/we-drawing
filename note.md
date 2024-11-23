@@ -67,3 +67,5 @@ GitHub Actions 生成新图片
 自动更新网站
 完全静态化，性能好
 不需要服务器维护
+
+//pnpm run start --token xxx

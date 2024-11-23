@@ -22,3 +22,5 @@ export const FLUX_CONFIG = {
     num_inference_steps: 50,
     guidance_scale: 50,
 };
+
+//1024x1024, 512x1024, 768x512, 768x1024, 1024x576, 576x1024 
