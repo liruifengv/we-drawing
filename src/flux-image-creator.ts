@@ -23,28 +23,50 @@ export class FluxImageCreator {
      * @returns 图片URL数组
      */
     async createImage(prompt: string, negative_prompt: string = "") {
-        console.log("正在发送请求...");
-        
-        try {
-            const response = await fetch(FLUX_URL, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${this._token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    ...FLUX_CONFIG,
-                    prompt,
-                    negative_prompt,
-                }),
-            });
+        console.log("正在发送4个并发请求...");
 
-            if (!response.ok) {
-                throw new Error(`请求失败: ${response.statusText}`);
+        try {
+            // Create an array of 4 identical requests
+            const requests = Array(4).fill(null).map(() =>
+                fetch(FLUX_URL, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${this._token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        ...FLUX_CONFIG,
+                        batch_size: Math.floor(Math.random() * 4) + 1,
+                        seed: Math.floor(Math.random() * 9999999999) + 1,
+                        num_inference_steps: Math.floor(Math.random() * 100) + 1,
+                        guidance_scale: Math.floor(Math.random() * 100) + 1,
+                        prompt,
+                        negative_prompt,
+                    }),
+                })
+            );
+
+            // Execute all requests in parallel
+            const responses = await Promise.all(requests);
+
+            // 检查是否所有请求都失败
+            const allFailed = responses.every(response => !response.ok);
+            if (allFailed) {
+                throw new Error(`所有请求都失败了`);
             }
 
-            const data = await response.json();
-            const imageUrls = data.images.map((img: { url: string }) => img.url);
+            // Check if any response failed
+            responses.forEach((response, index) => {
+                console.log(index, response.ok)
+            });
+
+            // Parse all responses
+            const results = await Promise.all(responses.filter(response => response.ok).map(response => response.json()));
+
+            // Combine all image URLs from all responses
+            const imageUrls = results.flatMap(data =>
+                data.images.map((img: { url: string }) => img.url)
+            );
 
             return imageUrls;
         } catch (error) {

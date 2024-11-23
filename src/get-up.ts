@@ -67,7 +67,8 @@ async function getFluxImageBySentence(token: string): Promise<Response> {
     }
 }
 const systemPrompt = `
-"关键词公式
+"请使用不同的风格生成图片，包括但不限于下面的风格：
+关键词公式
 主题（加下面的）
 +环境（背景，周围）
 +气氛（烈日下，雾蒙蒙，恐怖的，风暴席卷的）
