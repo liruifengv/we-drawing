@@ -35,7 +35,7 @@ jobs:
               run: pnpm run build
 
             - name: Create Image
-              run: pnpm run start --cookie "${{ secrets.FLUX_TOKEN }}"
+              run: pnpm run start --token "${{ secrets.FLUX_TOKEN }}"
 
             - name: Push New Pic
               run: |
