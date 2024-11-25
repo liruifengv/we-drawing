@@ -52,7 +52,7 @@ export class FluxImageCreator {
             // 检查是否所有请求都失败
             const allFailed = responses.every(response => !response.ok);
             if (allFailed) {
-                throw new Error(`所有请求都失败了`);
+                throw new Error(`所有请求都失败了！`);
             }
 
             // Check if any response failed
