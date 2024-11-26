@@ -15,7 +15,7 @@ export const SENTENCE_API = "https://v1.jinrishici.com/all";
 
 export const FLUX_URL = "https://api.siliconflow.cn/v1/images/generations";
 export const FLUX_CONFIG = {
-    model: "black-forest-labs/FLUX.1-dev",
+    model: "stabilityai/stable-diffusion-3-5-large",
     image_size: "1024x1024",
     batch_size: Math.floor(Math.random() * 4),
     seed: Math.floor(Math.random() * 9999999999),
@@ -28,3 +28,4 @@ export const FLUX_CONFIG = {
 //black-forest-labs/FLUX.1-dev
 //Pro/black-forest-labs/FLUX.1-schnell
 //black-forest-labs/FLUX.1-schnell
+//stabilityai/stable-diffusion-3-5-large
