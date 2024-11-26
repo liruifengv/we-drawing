@@ -16,15 +16,15 @@ jobs:
             contents: write
         strategy:
             matrix:
-                node-version: [18]
+                node-version: [20]
         steps:
             - name: Checkout 🛎️
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   persist-credentials: false
 
             - name: Install PNPM
-              uses: pnpm/action-setup@v2
+              uses: pnpm/action-setup@v3
               with:
                   version: ^7.0
 
