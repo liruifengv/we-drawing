@@ -46,3 +46,11 @@ jobs:
                   git commit -m "generated today pic" || echo "no need to commit "
                   git pull origin dev --rebase
                   git push -f || echo "no file change"
+
+            # 发送tg
+            - name: send tg message
+              uses: appleboy/telegram-action@master
+              with:
+                to: ${{ secrets.TELEGRAM_TO }}
+                token: ${{ secrets.TELEGRAM_TOKEN }}
+                message: Push New Pic Today
