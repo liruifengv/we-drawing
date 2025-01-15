@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { SENTENCE_API } from "./const";
 
-import { BingImageCreator } from "./bing-image-creator";
+import { ImageCreator } from "./image-creator";
 import type { SentenceResponse, Response } from "./types";
 
 /**
@@ -19,9 +19,9 @@ async function getSentence(): Promise<SentenceResponse> {
     }
 }
 
-async function getImageBySentence(cookie: string): Promise<Response> {
-    const bingImageCreator = new BingImageCreator({
-        cookie: cookie,
+async function getImageBySentence(token: string): Promise<Response> {
+    const imageCreator = new ImageCreator({
+        token: token,
     });
 
     const res = await getSentence();
@@ -29,7 +29,8 @@ async function getImageBySentence(cookie: string): Promise<Response> {
 
     const prompt = `${res.content}, textless`;
     try {
-        const images = await bingImageCreator.createImage(prompt);
+        const images = await imageCreator.createImage(prompt);
+        console.log("getImageBySentence Result: ", images);
         return {
             images,
             content: res.content,
@@ -38,7 +39,7 @@ async function getImageBySentence(cookie: string): Promise<Response> {
             category: res.category,
         };
     } catch (error) {
-        throw new Error(`Bing Image create failed: ${error.message}`);
+        throw new Error(`Flux Image create failed: ${error.message}`);
     }
 }
 

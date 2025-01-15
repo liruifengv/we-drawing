@@ -31,7 +31,7 @@ jobs:
               run: pnpm run build
 
             - name: Create Image
-              run: pnpm run start --cookie "${{ secrets.BING_COOKIE }}"
+              run: pnpm run start --token "${{ secrets.SILICON_FLOW_TOKEN }}"
 
             - name: Push New Pic
               run: |

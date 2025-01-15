@@ -12,9 +12,9 @@ async function init() {
 
     const argv = require("minimist")(process.argv.slice(2));
 
-    if (argv.cookie) {
+    if (argv.token) {
         try {
-            const res: Response = await getImageBySentence(argv.cookie);
+            const res: Response = await getImageBySentence(argv.token);
             console.log("Create Successful: ", res);
 
             const outputPath = path.join(cwd, "website/public");
@@ -68,7 +68,7 @@ async function init() {
             process.exit(1);
         }
     } else {
-        throw new Error("Please provide a cookie using the --cookie argument");
+        throw new Error("Please provide a token using the --token argument");
     }
 }
 
