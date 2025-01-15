@@ -1,6 +1,6 @@
 ---
 import '../styles/styles.css';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
 import { SITE } from '@config';
@@ -23,12 +23,12 @@ const { title, description } = Astro.props as Props;
 		<meta name="view-transition" content="same-origin" />
     <!-- General Meta Tags -->
     <title>{title}</title>
+		<ClientRouter />
     <meta name="title" content={title} />
     <meta name="description" content={description || SITE.desc} />
     <meta name="author" content={SITE.author} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     
-		<ViewTransitions />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YJV9MPDM78"></script>
     <script>

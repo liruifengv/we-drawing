@@ -1,7 +1,8 @@
 import { z, defineCollection } from "astro:content";
+import { glob } from 'astro/loaders';
 
 const images = defineCollection({
-    type: "data",
+    loader: glob({pattern: "**/*.json", base: "./src/content/images"}),
     schema: z.object({
         images: z.array(z.string()),
         content: z.string(),

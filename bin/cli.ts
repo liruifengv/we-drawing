@@ -1,9 +1,9 @@
 import { getImageBySentence } from "../src/get-up";
 import type { Response } from "../src/types";
-import path from "path";
-import fs from "fs";
-import stream from "stream";
-import { promisify } from "util";
+import path from "node:path";
+import fs from "node:fs";
+import stream from "node:stream";
+import { promisify } from "node:util";
 
 const pipeline = promisify(stream.pipeline);
 
