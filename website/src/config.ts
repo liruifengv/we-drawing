@@ -4,7 +4,7 @@ export const SITE: Site = {
     website: "https://we-drawing.com",
     author: "liruifengv",
     title: "Daily Poetry Images",
-    desc: "每天一句中国古诗词，生成 AI 图片 Powered by Bing DALL-E-3.",
+    desc: "每天一句中国古诗词，生成 AI 图片。",
 };
 
 export const SOCIALS: SocialObjects = [
