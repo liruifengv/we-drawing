@@ -6,11 +6,11 @@
 
 ## 项目介绍
 
--   本项目是使用 `stabilityai/stable-diffusion-3-5-large` 模型生成的图片，每天一句中国古诗词作为 Prompt。
+-   本项目是使用 [302.ai](https://share.302.ai/zUpqk7) 提供的 `Kwai-Kolors/Kolors` 模型，每天一句中国古诗词作为 Prompt，生成诗词图片。
 -   GitHub Action 自动触发。
 -   诗词由[今日诗词](https://www.jinrishici.com/)提供 API。
 -   网站使用 [Astro](https://astro.build) 构建。
--   使用硅基流动文生图 API
+-   使用[302.ai](https://share.302.ai/zUpqk7)文生图 API
 
 ## 设置 `WE_DRAWING_TOKEN`
 
