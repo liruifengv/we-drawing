@@ -21,7 +21,7 @@ export class ImageCreator {
                 body: JSON.stringify({
                     model: "Kwai-Kolors/Kolors",
                     image_size: "1024x1024",
-                    batch_size: 4,
+                    batch_size: 2,
                     num_inference_steps: 50,
                     seed: 1,
                     guidance_scale: 7.5,
