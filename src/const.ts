@@ -13,5 +13,4 @@ export const HEADERS: { [key: string]: string } = {
 
 export const SENTENCE_API = "https://v1.jinrishici.com/all";
 
-export const CREATE_IMAGE_API_URL = "https://api.siliconflow.cn/v1/images/generations";
-
+export const CREATE_IMAGE_API_URL = "https://api.302.ai/siliconflow/v1/images/generations";

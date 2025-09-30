@@ -31,7 +31,7 @@ jobs:
               run: pnpm run build
 
             - name: Create Image
-              run: pnpm run start --token "${{ secrets.SILICON_FLOW_TOKEN }}"
+              run: pnpm run start --token "${{ secrets.WE_DRAWING_TOKEN }}"
 
             - name: Push New Pic
               run: |

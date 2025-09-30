@@ -39,7 +39,7 @@ async function getImageBySentence(token: string): Promise<Response> {
             category: res.category,
         };
     } catch (error) {
-        throw new Error(`Flux Image create failed: ${error.message}`);
+        throw new Error(`Image create failed: ${error.message}`);
     }
 }
 
